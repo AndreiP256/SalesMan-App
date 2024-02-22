@@ -12,3 +12,48 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String
+  phone     String
+  role      UserRole
+  agentCode String   @unique
+  visits    Visit[]
+  Client    Client[]
+}
+
+model Client {
+  id           Int      @id @default(autoincrement())
+  description  String
+  companyName  String
+  taxCode      String
+  phones       String[]
+  emails       String[]
+  latitude     Float
+  longitude    Float
+  totalOrder   Float
+  salesAgent   User     @relation(fields: [salesAgentId], references: [id])
+  salesAgentId Int
+  clientCode   String   @unique
+  visits       Visit[]
+}
+
+model Visit {
+  id          Int      @id @default(autoincrement())
+  client      Client   @relation(fields: [clientId], references: [id])
+  clientId    Int
+  meetingTime DateTime @default(now())
+  conclusion  String
+  nextMeeting DateTime
+  invoice     Float
+  visitCode   String   @unique
+  user        User     @relation(fields: [userId], references: [id])
+  userId      Int
+}
+
+enum UserRole {
+  MANAGER
+  DRIVER
+  SALES_AGENT
+}
