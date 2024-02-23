@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -28,8 +28,8 @@ model Client {
   description  String
   companyName  String
   taxCode      String
-  phones       String[]
-  emails       String[]
+  phones       Phone[]
+  emails       Email[]
   latitude     Float
   longitude    Float
   totalOrder   Float
@@ -50,6 +50,20 @@ model Visit {
   visitCode   String   @unique
   user        User     @relation(fields: [userId], references: [id])
   userId      Int
+}
+
+model Phone {
+  id      Int     @id @default(autoincrement())
+  number  String
+  clientId Int
+  client  Client @relation(fields: [clientId], references: [id])
+}
+
+model Email {
+  id      Int     @id @default(autoincrement())
+  address String
+  clientId Int
+  client  Client @relation(fields: [clientId], references: [id])
 }
 
 enum UserRole {
