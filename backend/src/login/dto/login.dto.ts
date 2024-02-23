@@ -4,8 +4,4 @@ export class LoginUserDto {
   @IsNotEmpty()
   @IsString()
   agentCode: string;
-
-  @IsNotEmpty()
-  @IsString()
-  password: string;
 }
