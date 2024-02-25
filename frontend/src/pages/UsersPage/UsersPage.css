@@ -1,0 +1,14 @@
+/* UsersPage.css */
+
+  .modal-content h2 {
+    margin-top: 0;
+  }
+  
+  .modal-content p {
+    margin: 0 0 10px;
+  }
+  
+  .modal-content button {
+    display: block;
+    margin-top: 20px;
+  }
