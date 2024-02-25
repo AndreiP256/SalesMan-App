@@ -1,0 +1,19 @@
+.navbar {
+    display: flex;
+    justify-content: center;
+    background-color: #f8f9fa;
+    padding: 10px 0;
+  }
+  
+  .navbar-content {
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 200px;
+  }
+  
+  .navbar-link {
+    text-decoration: none;
+    color: #333;
+  }

@@ -20,7 +20,7 @@ export class LoginService {
       throw new UnauthorizedException('Invalid agent code');
     }
   
-    const payload = { username: user.agentCode };
+    const payload = { username: user.agentCode, role: user.role};
     return {
       access_token: this.jwtService.sign(payload),
     };
