@@ -29,10 +29,18 @@ async createClient(data: Prisma.ClientCreateInput & { salesAgentId: number }) {
     return client;
   }
 
+  async getClientVisits(clientId: number) {
+    return this.prisma.visit.findMany({
+      where: { clientId },
+    });
+  }
+
   async updateClient(id: number, data: Prisma.ClientUpdateInput) {
     const client = await this.prisma.client.update({ where: { id }, data });
     return client;
   }
+
+  
 
   async removeClient(id: number) {
     const client = await this.prisma.client.delete({ where: { id } });

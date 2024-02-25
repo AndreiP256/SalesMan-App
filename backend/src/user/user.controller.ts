@@ -28,6 +28,18 @@ export class UserController {
         return this.userService.findOneUser(userId);
     }
 
+    @Get(':id/visits')
+    async getUserVisits(@Param('id') id: string) {
+        const userId = Number(id); // Convert id to number
+        return this.userService.getUserVisits(userId);
+    }
+
+    @Get(':id/clients')
+    async getUserClients(@Param('id') id: string) {
+        const userId = Number(id); // Convert id to number
+        return this.userService.getUserClients(userId);
+    }
+
     @Put(':id')
     @Auth(UserRole.MANAGER)
     async update(@Param('id') id: string, @Body() UpdateUserDto: Prisma.UserUpdateInput) {

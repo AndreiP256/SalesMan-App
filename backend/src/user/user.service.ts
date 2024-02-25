@@ -24,10 +24,22 @@ export class UserService {
     return user;
   }
 
-  async updateUser(id: number, data: Prisma.UserUpdateInput) {
+  async getUserVisits(userId: number) {
+    return this.prisma.visit.findMany({
+      where: { userId },
+    });
+  }
+
+async getUserClients(userId: number) {
+    return this.prisma.client.findMany({
+        where: { id: userId },
+    });
+}
+
+async updateUser(id: number, data: Prisma.UserUpdateInput) {
     const user = await this.prisma.user.update({ where: { id }, data });
     return user;
-  }
+}
 
   async removeUser(id: number) {
     const user = await this.prisma.user.delete({ where: { id } });

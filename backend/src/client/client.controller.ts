@@ -5,10 +5,14 @@ import { CreateClientDto, UpdateClientDto } from './dto/client.dto';
 import { Auth } from 'src/login/decorators/auth.decorator';
 import { Prisma } from '@prisma/client';
 import { UserRole } from '@prisma/client';
+import { VisitService } from 'src/visit/visit.service';
 
 @Controller('clients')
 export class ClientController {
-    constructor(private readonly clientService: ClientService) {}
+    constructor(
+        private readonly clientService: ClientService,
+        private readonly visitService: VisitService,
+        ) {}
 
     @Post()
     @Auth(UserRole.MANAGER)
@@ -25,6 +29,18 @@ export class ClientController {
     async findOne(@Param('id') id: string) {
         const clientId = Number(id); // Convert id to number
         return this.clientService.findOneClient(clientId);
+    }
+
+    @Get(':id/visits')
+    async getClientVisits(@Param('id') id: string) {
+        const clientId = Number(id); // Convert id to number
+        return this.clientService.getClientVisits(clientId);
+    }
+
+    @Post(':id/visits')
+    async scheduleVisit(@Param('id') id: string, @Body() createVisitDto: Prisma.VisitCreateInput) {
+        const clientId = Number(id); // Convert id to number
+        return this.visitService.createVisitForClient({ ...createVisitDto, clientId });
     }
 
     @Put(':id')
