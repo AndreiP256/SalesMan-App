@@ -12,8 +12,8 @@ export class ClientController {
 
     @Post()
     @Auth(UserRole.MANAGER)
-    async create(@Body() createClientDto: Prisma.ClientCreateInput & { salesAgentId: number }) {
-        return this.clientService.createClient(createClientDto);
+    async create(@Body() CreateClientDto: Prisma.ClientCreateInput & { salesAgentId: number }) {
+        return this.clientService.createClient(CreateClientDto);
     }
 
     @Get()
@@ -29,6 +29,11 @@ export class ClientController {
 
     @Put(':id')
     @Auth(UserRole.MANAGER)
+    async update(@Param('id') id: string, @Body() UpdateClientDto: Prisma.ClientUpdateInput) {
+        const clientId = Number(id); // Convert id to number
+        return this.clientService.updateClient(clientId, UpdateClientDto);
+    }
+
     @Delete(':id')
     @Auth(UserRole.MANAGER)
     async remove(@Param('id') id: string) {
