@@ -8,15 +8,33 @@ export class ClientService {
   constructor(private prisma: PrismaService) {}
 
 async createClient(data: Prisma.ClientCreateInput & { salesAgentId: number }) {
-    const { salesAgentId, ...rest } = data;
-    const client = await this.prisma.client.create({
-        data: {
-            ...rest,
-            salesAgent: { connect: { id: salesAgentId } },
-            totalOrder: 0,
-        },
-    });
-    return client;
+  const { salesAgentId, latitude, longitude, ...rest } = data;
+
+  // Convert latitude and longitude to float
+  const latitudeFloat = parseFloat(String(latitude));
+  const longitudeFloat = parseFloat(String(longitude));
+  const numberAgentId = Number(salesAgentId);
+
+  // Check if latitude and longitude are valid numbers
+  if (isNaN(latitudeFloat) || isNaN(longitudeFloat)) {
+    throw new Error('Invalid latitude or longitude');
+  }
+
+  const client = await this.prisma.client.create({
+    data: {
+      ...rest,
+      latitude: latitudeFloat,
+      longitude: longitudeFloat,
+      salesAgent: {
+        connect: {
+          id: numberAgentId // salesAgentId is already a number, no need to convert
+        }
+      },
+      totalOrder: 0,
+    },
+  });
+
+  return client;
 }
 
   async findAllClients() {

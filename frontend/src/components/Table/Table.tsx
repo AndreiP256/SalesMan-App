@@ -17,12 +17,14 @@ function Table({ columns, data, onEdit }: TableProps) {
     const [editedClient, setEditedClient] = useState<any | null>(null);
     const [error, setError] = useState<string | null>(null);
     const uneditableColumns = ['id', 'clientId'];
+    const [message, setMessage] = useState('');
 
     
 
     function openModal(client: any) {
         setSelectedClient(client);
         setEditedClient({ ...client });
+        setMessage('');
         setIsOpen(true);
     }
 
@@ -38,6 +40,7 @@ function Table({ columns, data, onEdit }: TableProps) {
             setIsOpen(false);
         } catch (err) {
             setError((err as Error).message);
+            setMessage(`Error editing client.`);
         }
     }
 
@@ -87,6 +90,7 @@ function Table({ columns, data, onEdit }: TableProps) {
                     },
                 }}
             >
+                {message && <p>{message}</p>}
                 {selectedClient && !isEditing && columns.map(column => (
   <p key={column}>{column}: {(selectedClient as any)[column]}</p>
 ))}
