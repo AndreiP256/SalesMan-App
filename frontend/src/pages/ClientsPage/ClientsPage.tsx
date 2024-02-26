@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Table from './../../components/Table/Table';
+import { clientsEdit } from './../../components/Edit/editService';
 
 function ClientsPage() {
     const [clients, setClients] = useState([]);
@@ -16,7 +17,7 @@ function ClientsPage() {
     const columns = ['id', 'description', 'companyName', 'taxCode', 'latitude', 'longitude', 'totalOrder', 'salesAgentId', 'clientCode']; // replace with your actual columns
 
     return (
-        <Table data={clients} columns={columns} />
+        <Table data={clients} columns={columns} onEdit={clientsEdit} />
     );
 }
 

@@ -1,25 +1,44 @@
 import React, { useState } from 'react';
 import Modal from 'react-modal';
 
+
 Modal.setAppElement('#root');
 
 interface TableProps {
     columns: string[];
     data: any[];
+    onEdit: (client: any) => void;
 }
 
-function Table({ columns, data }: TableProps) {
+function Table({ columns, data, onEdit }: TableProps) {
     const [selectedClient, setSelectedClient] = useState(null);
     const [modalIsOpen, setIsOpen] = useState(false);
+    const [isEditing, setIsEditing] = useState(false);
+    const [editedClient, setEditedClient] = useState<any | null>(null);
+    const [error, setError] = useState<string | null>(null);
+    const uneditableColumns = ['id', 'clientId'];
+
     
 
     function openModal(client: any) {
         setSelectedClient(client);
+        setEditedClient({ ...client });
         setIsOpen(true);
     }
 
     function closeModal() {
         setIsOpen(false);
+        setIsEditing(false);
+    }
+
+    function handleEdit() {
+        try {
+            onEdit(editedClient);
+            setIsEditing(false);
+            setIsOpen(false);
+        } catch (err) {
+            setError((err as Error).message);
+        }
     }
 
     const renderTable = (data: any[]) => (
@@ -68,11 +87,45 @@ function Table({ columns, data }: TableProps) {
                     },
                 }}
             >
-                {selectedClient && columns.map(column => (
-                    <p key={column}>{column}: {(selectedClient as any)[column]}</p>
-                ))}
-                <button onClick={closeModal}>Close</button>
-            </Modal>
+                {selectedClient && !isEditing && columns.map(column => (
+  <p key={column}>{column}: {(selectedClient as any)[column]}</p>
+))}
+{isEditing && columns.map(column => (
+    uneditableColumns.includes(column) ? (
+        <p key={column}>{column}: {(editedClient as any)[column]}</p>
+    ) : (
+  <div key={column}>
+    <label>{column}:</label>
+    {column === 'role' ? (
+      <select
+        value={(editedClient as any)[column]}
+        onChange={(e) => setEditedClient({ ...editedClient, [column]: e.target.value })}
+      >
+        <option value="MANAGER">MANAGER</option>
+        <option value="DRIVER">DRIVER</option>
+        <option value="SALES_AGENT">SALES_AGENT</option>
+        {/* Add more options as needed */}
+      </select>
+    ) : column === 'meetingTime' || column == "nextMeeting"  ? (
+      <input
+        type="date"
+        value={(editedClient as any)[column]}
+        onChange={(e) => setEditedClient({ ...editedClient, [column]: e.target.value })}
+      />
+    ) : (
+      <input
+        value={(editedClient as any)[column]}
+        onChange={(e) => setEditedClient({ ...editedClient, [column]: e.target.value })}
+      />
+    )}
+  </div>
+))
+)}
+<button onClick={closeModal}>Close</button>
+{!isEditing && <button onClick={() => setIsEditing(true)}>Edit</button>}
+{isEditing && <button onClick={handleEdit}>Save</button>}
+{error && <p>Error: {error}</p>}
+</Modal>
         </div>
     );
 }
