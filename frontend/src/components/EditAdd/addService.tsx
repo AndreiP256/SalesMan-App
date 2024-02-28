@@ -99,6 +99,7 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
                                         value={(formData as any)[column]}
                                         onChange={(e) => setFormData({ ...formData, [column]: e.target.value })}
                                     >
+                                        <option value="">-</option>
                                         <option value="MANAGER">MANAGER</option>
                                         <option value="DRIVER">DRIVER</option>
                                         <option value="SALES_AGENT">SALES_AGENT</option>
