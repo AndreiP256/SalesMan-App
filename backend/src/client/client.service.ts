@@ -58,10 +58,19 @@ async createClient(data: Prisma.ClientCreateInput & { salesAgentId: number }) {
     return client;
   }
 
-  
-
   async removeClient(id: number) {
+    // Delete all related Visit records
+    await this.prisma.visit.deleteMany({ where: { clientId: id } });
+
+    // Delete all related Phone records
+    await this.prisma.phone.deleteMany({ where: { clientId: id } });
+
+    // Delete all related Email records
+    await this.prisma.email.deleteMany({ where: { clientId: id } });
+
+    // Now you can delete the Client
     const client = await this.prisma.client.delete({ where: { id } });
+
     return client;
-  }
+}
 }

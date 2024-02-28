@@ -13,6 +13,10 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
     const uneditableColumns = ['id'];
     const [message, setMessage] = useState('');
 
+    const closeModal = () => {
+        setModalIsOpen(false);
+    };
+
     const handleSubmit = async (event: any) => {
         event.preventDefault();
         let apiEndpoint = '';
@@ -122,6 +126,7 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
                         )
                     ))}
                     <button type="submit">Add User</button>
+                    <button onClick={closeModal}>Close</button>
                 </form>
             </Modal>
         </div>

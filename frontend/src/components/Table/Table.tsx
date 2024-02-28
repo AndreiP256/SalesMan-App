@@ -8,9 +8,10 @@ interface TableProps {
     columns: string[];
     data: any[];
     onEdit: (client: any) => void;
+    onDelete: (client: any) => void;
 }
 
-function Table({ columns, data, onEdit }: TableProps) {
+function Table({ columns, data, onEdit, onDelete }: TableProps) {
     const [selectedClient, setSelectedClient] = useState(null);
     const [modalIsOpen, setIsOpen] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -41,6 +42,16 @@ function Table({ columns, data, onEdit }: TableProps) {
         } catch (err) {
             setError((err as Error).message);
             setMessage(`Error editing client.`);
+        }
+    }
+
+    function handleDelete() {
+        try {
+            onDelete(selectedClient);
+            setIsOpen(false);
+        } catch (err) {
+            setError((err as Error).message);
+            setMessage(`Error deleting client.`);
         }
     }
 
@@ -128,6 +139,7 @@ function Table({ columns, data, onEdit }: TableProps) {
 <button onClick={closeModal}>Close</button>
 {!isEditing && <button onClick={() => setIsEditing(true)}>Edit</button>}
 {isEditing && <button onClick={handleEdit}>Save</button>}
+{!isEditing && <button className='btn-danger' onClick={handleDelete}>Delete</button>}
 {error && <p>Error: {error}</p>}
 </Modal>
         </div>

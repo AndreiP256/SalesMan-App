@@ -3,6 +3,7 @@ import axios from 'axios';
 import Table from './../../components/Table/Table';
 import { visitsEdit } from '../../components/EditAdd/editService';
 import { AddForm } from '../../components/EditAdd/addService';
+import { visitsDelete } from '../../components/EditAdd/deleteService';
 
 function VisitsPage() {
     const [visits, setVisits] = useState([]);
@@ -21,7 +22,7 @@ function VisitsPage() {
         <div>
             <h1>Visits</h1>
             <AddForm columns={columns} addType="visit"/>
-            <Table data={visits} columns={columns} onEdit={visitsEdit}/>
+            <Table data={visits} columns={columns} onEdit={visitsEdit} onDelete={visitsDelete}/>
         </div>
     );
 }
