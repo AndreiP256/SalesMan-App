@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
+import axios from 'axios';
 
 
 Modal.setAppElement('#root');
@@ -17,8 +18,10 @@ function Table({ columns, data, onEdit, onDelete }: TableProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [editedClient, setEditedClient] = useState<any | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const uneditableColumns = ['id', 'clientId'];
+    const uneditableColumns = ['id'];
     const [message, setMessage] = useState('');
+    const [saleAgents, setSalesAgents] = useState('');
+    const [clients, setClients] = useState('');
 
     
 
@@ -71,6 +74,21 @@ function Table({ columns, data, onEdit, onDelete }: TableProps) {
             </tbody>
         </table>
     );
+
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_URL + '/user')
+            .then(response => {
+                setSalesAgents(response.data);
+            })
+            .catch(error => console.error(error));
+
+        axios.get(process.env.REACT_APP_URL + '/clients')
+            .then(response => {
+                setClients(response.data);
+            })
+            .catch(error => console.error(error));
+    
+    }, []);
 
     return (
         <div>
@@ -127,6 +145,30 @@ function Table({ columns, data, onEdit, onDelete }: TableProps) {
         value={(editedClient as any)[column]}
         onChange={(e) => setEditedClient({ ...editedClient, [column]: e.target.value })}
       />
+      ) : (column === 'salesAgentId') ? (
+        <select
+            value={(editedClient as any)[column]}
+            onChange={(e) => setEditedClient({...editedClient, [column]: e.target.value})}
+        >
+            <option value=''>-</option>
+            {Array.isArray(saleAgents) && saleAgents.filter((agent: any) => agent.role === 'SALES_AGENT').map((agent: any) => (
+                <option key={agent.id} value={agent.id}>
+                    {agent.name}
+                </option>
+            ))}
+        </select>
+    ) : ( column === 'clientId') ? (
+        <select
+            value={(editedClient as any)[column]}
+            onChange={(e) => setEditedClient({...editedClient, [column]: e.target.value})}
+        >
+            <option value=''>-</option>
+            {Array.isArray(clients) && clients.map((client: any) => (
+                <option key={client.id} value={client.id}>
+                    {client.companyName}
+                </option>
+            ))}
+        </select>
     ) : (
       <input
         value={(editedClient as any)[column]}

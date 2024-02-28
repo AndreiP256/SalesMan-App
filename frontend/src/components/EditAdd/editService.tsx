@@ -12,7 +12,8 @@ export function visitsEdit(visit: any) {
 }
 
 export function clientsEdit(client: any) {
-    return axios.put(process.env.REACT_APP_URL + '/clients/' + client.id, client)
+    const { id, ...clientWithoutId } = client;
+    return axios.put(process.env.REACT_APP_URL + '/clients/' + id, clientWithoutId)
         .then(response => {
             console.log(response);
         })

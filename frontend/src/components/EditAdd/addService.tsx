@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
+import axios from 'axios';
+
 
 interface AddFormProps {
     columns: string[];
@@ -12,6 +14,8 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const uneditableColumns = ['id'];
     const [message, setMessage] = useState('');
+    const [saleAgents, setSalesAgents] = useState('');
+    const [clients, setClients] = useState('');
 
     const closeModal = () => {
         setModalIsOpen(false);
@@ -59,6 +63,21 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
             setMessage(`Error creating new ${addType}.`);
         }
     };
+
+    useEffect(() => {
+        axios.get(process.env.REACT_APP_URL + '/user')
+            .then(response => {
+                setSalesAgents(response.data);
+            })
+            .catch(error => console.error(error));
+
+        axios.get(process.env.REACT_APP_URL + '/clients')
+            .then(response => {
+                setClients(response.data);
+            })
+            .catch(error => console.error(error));
+    
+    }, []);
 
     return (
         <div>
@@ -116,16 +135,40 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
                                         value={(formData as any)[column]}
                                         onChange={(e) => setFormData({ ...formData, [column]: e.target.value })}
                                     />
+                                ) : (column === 'salesAgentId') ? (
+                                    <select
+                                        value={(formData as any)[column]}
+                                        onChange={(e) => setFormData({...formData, [column]: e.target.value})}
+                                    >
+                                        <option value=''>-</option>
+                                        {Array.isArray(saleAgents) && saleAgents.filter((agent: any) => agent.role === 'SALES_AGENT').map((agent: any) => (
+                                            <option key={agent.id} value={agent.id}>
+                                                {agent.name}
+                                            </option>
+                                        ))}
+                                    </select>
+                                ) : ( column === 'clientId') ? (
+                                    <select
+                                        value={(formData as any)[column]}
+                                        onChange={(e) => setFormData({...formData, [column]: e.target.value})}
+                                    >
+                                        <option value=''>-</option>
+                                        {Array.isArray(clients) && clients.map((client: any) => (
+                                            <option key={client.id} value={client.id}>
+                                                {client.companyName}
+                                            </option>
+                                        ))}
+                                    </select>
                                 ) : (
                                     <input
                                         value={(formData as any)[column]}
                                         onChange={(e) => setFormData({ ...formData, [column]: e.target.value })}
                                     />
-                                )}
-                            </div>
+                                )
+                                 } </div>
                         )
                     ))}
-                    <button type="submit">Add User</button>
+                    <button type="submit">Add</button>
                     <button onClick={closeModal}>Close</button>
                 </form>
             </Modal>

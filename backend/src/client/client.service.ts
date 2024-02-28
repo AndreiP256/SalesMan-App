@@ -53,8 +53,38 @@ async createClient(data: Prisma.ClientCreateInput & { salesAgentId: number }) {
     });
   }
 
-  async updateClient(id: number, data: Prisma.ClientUpdateInput) {
-    const client = await this.prisma.client.update({ where: { id }, data });
+  async updateClient(id: number, data: Prisma.ClientUpdateInput & { salesAgentId?: number }) {
+    const { salesAgentId, latitude, longitude, ...rest } = data;
+
+    // Convert latitude and longitude to float
+    const latitudeFloat = parseFloat(String(latitude));
+    const longitudeFloat = parseFloat(String(longitude));
+
+    // Check if latitude and longitude are valid numbers
+    if (isNaN(latitudeFloat) || isNaN(longitudeFloat)) {
+      throw new Error('Invalid latitude or longitude');
+    }
+
+    const updateData: Prisma.ClientUpdateInput = {
+      ...rest,
+      latitude: latitudeFloat,
+      longitude: longitudeFloat,
+    };
+
+    if (salesAgentId !== undefined) {
+      const numberAgentId = Number(salesAgentId);
+      updateData.salesAgent = {
+        connect: {
+          id: numberAgentId
+        }
+      };
+    }
+
+    const client = await this.prisma.client.update({
+      where: { id },
+      data: updateData
+    });
+
     return client;
   }
 
