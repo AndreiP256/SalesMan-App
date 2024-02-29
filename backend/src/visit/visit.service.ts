@@ -6,9 +6,27 @@ import { Prisma } from '@prisma/client';
 export class VisitService {
   constructor(private prisma: PrismaService) {}
 
-  async createVisit(data: Prisma.VisitCreateInput) {
+  async createVisit(data: Prisma.VisitCreateInput & { clientId: number, userId: number, invoice: number}) {
+    const { clientId, userId, invoice, ...rest } = data;
+    const clientNumberId = Number(clientId);
+    const agentNumber= Number(userId);
+    const invoiceNumber = parseFloat(String(invoice));
+
     const visit = await this.prisma.visit.create({
-        data,
+        data: {
+            ...rest,
+            invoice: invoiceNumber,
+            client: {
+                connect: {
+                    id: clientNumberId
+                }
+            },
+            user : {
+              connect: {  
+                id: agentNumber
+              }
+            }
+        }
     });
     return visit;
   }
@@ -23,8 +41,30 @@ export class VisitService {
     return visit;
   }
 
-  async updateVisit(id: number, data: Prisma.VisitUpdateInput) {
-    const visit = await this.prisma.visit.update({ where: { id }, data });
+  async updateVisit(id: number, data: Prisma.VisitUpdateInput & { clientId: number, userId: number, invoice: number, id: number}) {
+    const { clientId, userId, invoice, id: _, ...rest } = data;
+    const clientNumberId = Number(clientId);
+    const agentNumber = Number(userId);
+    const invoiceNumber = parseFloat(String(invoice));
+  
+    const visit = await this.prisma.visit.update({
+      where: { id },
+      data: {
+        ...rest,
+        invoice: invoiceNumber,
+        client: {
+          connect: {
+            id: clientNumberId
+          }
+        },
+        user: {
+          connect: {
+            id: agentNumber
+          }
+        }
+      }
+    });
+  
     return visit;
   }
   

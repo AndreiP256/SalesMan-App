@@ -130,11 +130,30 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
                                     </select>
                                 
                                 ) : (column === 'meetingTime' || column == "nextMeeting") ? (
+                                    <>
                                     <input
                                         type="date"
-                                        value={(formData as any)[column]}
-                                        onChange={(e) => setFormData({ ...formData, [column]: e.target.value })}
+                                        value={(formData as any)[`${column}Date`]}
+                                        onChange={(e) => {
+                                        const date = e.target.value;
+                                        setFormData(prevState => ({
+                                            ...prevState,
+                                            [column]: `${date}T${(prevState as any)[`${column}Time`] || '00:00:00.000'}Z`
+                                        }));
+                                        }}
                                     />
+                                    <input
+                                        type="time"
+                                        value={(formData as any)[`${column}Time`]}
+                                        onChange={(e) => {
+                                        const time = e.target.value;
+                                        setFormData(prevState => ({
+                                            ...prevState,
+                                            [column]: `${(prevState as any)[`${column}Date`] || '1970-01-01'}T${time}:00.000Z`
+                                        }));
+                                        }}
+                                    />
+                                    </>
                                 ) : (column === 'salesAgentId') ? (
                                     <select
                                         value={(formData as any)[column]}
@@ -159,6 +178,18 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
                                             </option>
                                         ))}
                                     </select>
+                                ) : (column === 'userId') ? (
+                                    <select
+                                    value={(formData as any)[column]}
+                                    onChange={(e) => setFormData({...formData, [column]: e.target.value})}
+                                  >
+                                    <option value=''>-</option>
+                                    {Array.isArray(saleAgents) && saleAgents.map((salesAgent: any) => (
+                                      <option key={salesAgent.id} value={salesAgent.id}>
+                                        {salesAgent.name} {/* Replace 'name' with the appropriate property of the salesAgent object */}
+                                      </option>
+                                    ))}
+                                  </select>
                                 ) : (
                                     <input
                                         value={(formData as any)[column]}

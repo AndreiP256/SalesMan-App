@@ -140,11 +140,30 @@ function Table({ columns, data, onEdit, onDelete }: TableProps) {
         {/* Add more options as needed */}
       </select>
     ) : column === 'meetingTime' || column == "nextMeeting"  ? (
-      <input
-        type="date"
-        value={(editedClient as any)[column]}
-        onChange={(e) => setEditedClient({ ...editedClient, [column]: e.target.value })}
-      />
+        <>
+        <input
+            type="date"
+            value={(editedClient as any)[`${column}Date`]}
+            onChange={(e) => {
+            const date = e.target.value;
+            setEditedClient((prevState: any) => ({
+                ...prevState,
+                [column]: `${date}T${(prevState as any)[`${column}Time`] || '00:00:00.000'}Z`
+            }));
+            }}
+        />
+        <input
+            type="time"
+            value={(editedClient as any)[`${column}Time`]}
+            onChange={(e) => {
+                const time = e.target.value;
+                setEditedClient((prevState: any) => ({
+                    ...prevState,
+                    [column]: `${(prevState as any)[`${column}Date`] || '1970-01-01'}T${time}:00.000Z`
+                }));
+            }}
+        />
+        </>
       ) : (column === 'salesAgentId') ? (
         <select
             value={(editedClient as any)[column]}
@@ -169,6 +188,18 @@ function Table({ columns, data, onEdit, onDelete }: TableProps) {
                 </option>
             ))}
         </select>
+    ) : (column === 'userId') ? (
+        <select
+        value={(editedClient as any)[column]}
+        onChange={(e) => setEditedClient({...editedClient, [column]: e.target.value})}
+      >
+        <option value=''>-</option>
+        {Array.isArray(saleAgents) && saleAgents.map((salesAgent: any) => (
+          <option key={salesAgent.id} value={salesAgent.id}>
+            {salesAgent.name} {/* Replace 'name' with the appropriate property of the salesAgent object */}
+          </option>
+        ))}
+      </select>
     ) : (
       <input
         value={(editedClient as any)[column]}
