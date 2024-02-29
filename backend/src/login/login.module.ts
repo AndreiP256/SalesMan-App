@@ -9,7 +9,12 @@ import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtService } from '@nestjs/jwt';
 
 @Module({
-    imports: [],
+    imports: [
+        JwtModule.register({
+            secret: process.env.JWT_SECRET,
+            signOptions: { expiresIn: '60s' },
+        }),
+    ],
     providers: [LoginService, PrismaService, JwtStrategy, JwtService],
     controllers: [LoginController],
     exports: [LoginService, JwtStrategy],

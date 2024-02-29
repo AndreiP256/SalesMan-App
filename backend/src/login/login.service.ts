@@ -1,6 +1,6 @@
-import { Injectable, UnauthorizedException, BadRequestException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma/prisma.service';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class LoginService {
@@ -12,17 +12,19 @@ export class LoginService {
   async login(agentCode) {
     const user = await this.prisma.user.findFirst({
       where: {
-        agentCode: agentCode,
+        agentCode,
       },
     });
-  
+
     if (!user) {
       throw new UnauthorizedException('Invalid agent code');
     }
-  
-    const payload = { username: user.agentCode, role: user.role};
+
+    const payload = { username: user.agentCode, role: user.role };
+    const token = this.jwtService.sign(payload);
+
     return {
-      access_token: this.jwtService.sign(payload),
+      access_token: token,
     };
   }
 }

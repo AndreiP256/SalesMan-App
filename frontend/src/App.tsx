@@ -7,7 +7,11 @@ import UsersPage from "./pages/UsersPage/UsersPage"; // Import your UsersPage co
 import VisitsPage from "./pages/VisitsPage/VisitsPage"; // Import your VisitsPage component
 import ClientsPage from "./pages/ClientsPage/ClientsPage"; // Import your ClientsPage component
 import { ADDRCONFIG } from "dns";
+import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
+import LoginPage from "./pages/Login/Login";
 import "./App.css";
+
+
 
 function App() {
   return (
@@ -15,11 +19,12 @@ function App() {
       <Navbar />
       <div className="page-content">
         <Routes>
-          <Route path='/users' element={ <UsersPage /> } />
-          <Route path='/visits' element={ <VisitsPage /> } />
-          <Route path='/clients' element={ <ClientsPage /> } />
-          <Route path='/calendar' element={ <MyCalendar /> } />
-          <Route path='*' element={ <AdminPage /> } />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/users" element={<UsersPage />} />
+          <Route path="/visits" element={<VisitsPage />} />
+          <Route path="/clients" element={<ClientsPage />} />
+          <Route path="/calendar" element={<MyCalendar />} />
+          <Route path="*" element={<AdminPage />} />
         </Routes>
       </div>
     </BrowserRouter>
