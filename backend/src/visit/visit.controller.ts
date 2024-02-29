@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, Param, Delete, Query } from '@nestjs/common';
 import { VisitService } from './visit.service';
 import { Visit } from '@prisma/client';
 import { Auth } from 'src/login/decorators/auth.decorator';
@@ -6,6 +6,7 @@ import { UserRole } from '@prisma/client';
 import { Prisma } from '@prisma/client';
 import { CreateVisitDto, UpdateVisitDto } from './dto/visit.dto';
 import { ClientService } from 'src/client/client.service';
+import { IsISO8601 } from 'class-validator';
 
 @Controller('visit')
 export class VisitController {
@@ -28,6 +29,22 @@ export class VisitController {
     const visitId = Number(id); // Convert id to number
     return this.visitService.findOneVisit(visitId);
   }
+
+  @Get('date/:date')
+  async findVisitsByDate(@Param('date') date: string) {
+    return this.visitService.findVisitsByDate(date);
+  }
+
+  @Get('dateRange')
+  async findVisitsByDateRange(
+    @Query('start') start: string,
+    @Query('end') end: string,
+  ): Promise<Visit[]> {
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    return this.visitService.findVisitsByDateRange(startDate, endDate);
+  }
+
 
   @Put(':id')
   @Auth(UserRole.SALES_AGENT)

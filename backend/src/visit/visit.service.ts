@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
+import { Visit } from '@prisma/client';
 
 @Injectable()
 export class VisitService {
@@ -37,9 +38,45 @@ export class VisitService {
   }
 
   async findOneVisit(id: number) {
+    console.log('findOneVisit called with id:', id);
+    console.log(new Error().stack);
     const visit = await this.prisma.visit.findUnique({ where: { id } });
     return visit;
   }
+
+  async findVisitsByDate(date: string) {
+    console.log(date);
+    
+    const startDate = new Date(date);
+    startDate.setUTCHours(0, 0, 0, 0);
+  
+    const endDate = new Date(date);
+    endDate.setUTCHours(23, 59, 59, 999);
+  
+    const visits = await this.prisma.visit.findMany({
+      where: {
+        nextMeeting: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+    });
+  
+    console.log(visits);
+    return visits;
+  }
+
+  async findVisitsByDateRange(start: Date, end: Date): Promise<Visit[]> {
+    console.log(start);
+    console.log(end);
+    return this.prisma.visit.findMany({
+      where: {
+        nextMeeting: {
+          gte: start,
+          lte: end,
+        },
+      },
+    });}
 
   async updateVisit(id: number, data: Prisma.VisitUpdateInput & { clientId: number, userId: number, invoice: number, id: number}) {
     const { clientId, userId, invoice, id: _, ...rest } = data;
