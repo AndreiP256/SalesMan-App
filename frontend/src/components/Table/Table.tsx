@@ -209,10 +209,10 @@ function Table({ columns, data, onEdit, onDelete }: TableProps) {
   </div>
 ))
 )}
-<button onClick={closeModal}>Close</button>
-{!isEditing && <button onClick={() => setIsEditing(true)}>Edit</button>}
-{isEditing && <button onClick={handleEdit}>Save</button>}
-{!isEditing && <button className='btn-danger' onClick={handleDelete}>Delete</button>}
+<button className="btn btn-secondary my-button" onClick={closeModal}>Close</button>
+{!isEditing && <button className="btn btn-primary my-button" onClick={() => setIsEditing(true)}>Edit</button>}
+{isEditing && <button className="btn btn-success my-button" onClick={handleEdit}>Save</button>}
+{!isEditing && <button className='btn btn-danger my-button' onClick={handleDelete}>Delete</button>}
 {error && <p>Error: {error}</p>}
 </Modal>
         </div>

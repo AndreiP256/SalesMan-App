@@ -199,8 +199,8 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
                                  } </div>
                         )
                     ))}
-                    <button className="btn btn-success"  type="submit">Add</button>
-                    <button className="btn btn-danger"  onClick={closeModal}>Close</button>
+                    <button className="btn btn-success my-button"  type="submit">Add</button>
+                    <button className="btn btn-danger my-button"  onClick={closeModal}>Close</button>
                 </form>
             </Modal>
         </div>
