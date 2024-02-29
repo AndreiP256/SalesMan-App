@@ -1,65 +1,53 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Calendar, momentLocalizer, View, NavigateAction } from 'react-big-calendar';
-import moment from 'moment';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-
-const localizer = momentLocalizer(moment);
+import moment from 'moment';
+import './Calendar.css';
 
 function MyCalendar() {
-  type Event = {
-    start: Date;
-    end: Date;
-    title: string;
-  };
-  const [events, setEvents] = useState<Event[]>([]);
+  const [events, setEvents] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [currentView, setCurrentView] = useState<View>('week');
-
-  const fetchEvents = useCallback(async () => {
-    const start = moment(currentDate).startOf(currentView as moment.unitOfTime.StartOf).toISOString();
-    const end = moment(currentDate).endOf(currentView as moment.unitOfTime.StartOf).toISOString();
-
-    try {
-      const response = await axios.get(`${process.env.REACT_APP_URL}/visit/dateRange`, {
-        params: {
-          start,
-          end,
-        },
-      });
-
-      const fetchedEvents = response.data.map((item: any) => ({
-        start: new Date(item.nextMeeting),
-        end: new Date(item.nextMeeting),
-        title: item.title,
-      }));
-
-      setEvents(fetchedEvents);
-    } catch (error) {
-      console.error(error);
-    }
-  }, [currentDate, currentView]);
 
   useEffect(() => {
-    fetchEvents();
-  }, [fetchEvents]);
+    const date = moment(currentDate).format('YYYY-MM-DD');
+    axios.get(`${process.env.REACT_APP_URL}/visit/date/${date}`)
+      .then(response => {
+        if (response.data) {
+          const fetchedEvents = response.data.map((item:any) => ({
+            start: new Date(item.meetingTime),
+            end: new Date(item.nextMeeting),
+            title: item.visitCode ? item.visitCode : 'No visit code',
+          }));
+          setEvents(fetchedEvents);
+        }
+      })
+      .catch(error => console.error(error));
+  }, [currentDate]);
 
-  return (
-    <div style={{ height: 500 }}>
-      <button onClick={fetchEvents}>Refetch Events</button>
-      <Calendar
-        localizer={localizer}
-        events={events}
-        startAccessor="start"
-        endAccessor="end"
-        style={{ height: 500 }}
-        views={['week']}
-        defaultView='week'
-        onNavigate={(newDate: Date, view: View, action: NavigateAction) => setCurrentDate(newDate)}
-        onView={(view: View) => setCurrentView(view)}
-      />
+  const onPreviousDay = () => {
+    setCurrentDate(prevDate => moment(prevDate).add(-1, 'day').toDate());
+  };
+
+  const onNextDay = () => {
+    setCurrentDate(prevDate => moment(prevDate).add(1, 'day').toDate());
+  };
+
+ return (
+  <div className="calendar">
+    <div className="calendar-header">
+      <button className="calendar-button" onClick={() => setCurrentDate(prevDate => moment(prevDate).add(-1, 'day').toDate())}>Previous Day</button>
+      <p className="calendar-date">{moment(currentDate).format('YYYY-MM-DD')}</p>
+      <button className="calendar-button" onClick={() => setCurrentDate(prevDate => moment(prevDate).add(1, 'day').toDate())}>Next Day</button>
     </div>
-  );
+    <ul className="calendar-events">
+      {events.map((event: {title: string, start: Date}, index) => (
+        <li key={index} className="calendar-event">
+          <h2 className="event-title">{event.title}</h2>
+          <p className="event-time">Time: {event.start.toString()}</p>
+        </li>
+      ))}
+    </ul>
+  </div>
+);
 }
 
 export default MyCalendar;

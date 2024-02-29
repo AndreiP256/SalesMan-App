@@ -81,7 +81,7 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
 
     return (
         <div>
-            <button onClick={() => {
+            <button className="btn btn-primary"  onClick={() => {
                 setFormData({});
                 setMessage('');
                 setModalIsOpen(true)
@@ -199,8 +199,8 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
                                  } </div>
                         )
                     ))}
-                    <button type="submit">Add</button>
-                    <button onClick={closeModal}>Close</button>
+                    <button className="btn btn-success"  type="submit">Add</button>
+                    <button className="btn btn-danger"  onClick={closeModal}>Close</button>
                 </form>
             </Modal>
         </div>
