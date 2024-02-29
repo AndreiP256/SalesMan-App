@@ -31,12 +31,17 @@ function MyCalendar() {
     setCurrentDate(prevDate => moment(prevDate).add(1, 'day').toDate());
   };
 
- return (
+return (
   <div className="calendar">
     <div className="calendar-header">
-      <button className="calendar-button" onClick={() => setCurrentDate(prevDate => moment(prevDate).add(-1, 'day').toDate())}>Previous Day</button>
-      <p className="calendar-date">{moment(currentDate).format('YYYY-MM-DD')}</p>
-      <button className="calendar-button" onClick={() => setCurrentDate(prevDate => moment(prevDate).add(1, 'day').toDate())}>Next Day</button>
+      <button className="calendar-button" onClick={onPreviousDay}>Previous Day</button>
+      <input 
+        type="date" 
+        className="calendar-date" 
+        value={moment(currentDate).format('YYYY-MM-DD')} 
+        onChange={(e) => setCurrentDate(new Date(e.target.value))}
+      />
+      <button className="calendar-button" onClick={onNextDay}>Next Day</button>
     </div>
     <ul className="calendar-events">
       {events.map((event: {title: string, start: Date}, index) => (
