@@ -10,6 +10,7 @@ import { ADDRCONFIG } from "dns";
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import LoginPage from "./pages/Login/Login";
 import "./App.css";
+import VisitRequestPage from "./pages/VisitRequestsPage/VisitRequestsPage";
 
 
 
@@ -24,6 +25,7 @@ function App() {
           <Route path="/visits" element={<VisitsPage />} />
           <Route path="/clients" element={<ClientsPage />} />
           <Route path="/calendar" element={<MyCalendar />} />
+          <Route path="/visitRequest" element={<VisitRequestPage />} />
           <Route path="*" element={<AdminPage />} />
         </Routes>
       </div>

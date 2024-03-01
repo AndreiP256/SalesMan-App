@@ -35,6 +35,9 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
             case 'visit':
                 apiEndpoint = '/visit';
                 break;
+            case 'visitRequest':
+                apiEndpoint = '/visitRequest';
+                break;
             default:
                 console.error('Invalid addType');
                 return;

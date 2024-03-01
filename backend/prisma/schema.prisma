@@ -21,6 +21,7 @@ model User {
   agentCode String   @unique
   visits    Visit[]
   Client    Client[]
+  salesVisits   VisitRequest[] @relation("SalesAgentToVisitRequest")
 }
 
 model Client {
@@ -37,6 +38,7 @@ model Client {
   salesAgentId Int
   clientCode   String   @unique
   visits       Visit[]
+  requestedVisits VisitRequest[] @relation("ClientToVisitRequest")
 }
 
 model Visit {
@@ -50,6 +52,19 @@ model Visit {
   visitCode   String   @unique
   user        User     @relation(fields: [userId], references: [id])
   userId      Int
+}
+
+model VisitRequest {
+  id             Int      @id @default(autoincrement())
+  salesAgentId   Int
+  clientId       Int
+  visitDate      DateTime?
+  status         String   @default("Pending")
+  SalesAgent     User     @relation("SalesAgentToVisitRequest", fields: [salesAgentId], references: [id])
+  Client         Client   @relation("ClientToVisitRequest", fields: [clientId], references: [id])
+
+  @@index([salesAgentId], name: "salesAgentId")
+  @@index([clientId], name: "clientId")
 }
 
 model Phone {

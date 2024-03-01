@@ -9,9 +9,10 @@ import { LoginModule } from './login/login.module';
 import { ClientModule } from './client/client.module';
 import { SalesAgentModule } from './sales-agent/sales-agent.module';
 import { JwtStrategy } from './login/strategies/jwt.strategy';
+import { VisitRequestModule } from './visitRequests/visitRequest.module';
 
 @Module({
-  imports: [VisitModule, DriverModule, ManagerModule, UserModule, LoginModule, ClientModule, SalesAgentModule],
+  imports: [VisitModule, DriverModule, ManagerModule, UserModule, LoginModule, ClientModule, SalesAgentModule, VisitRequestModule],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],
 })

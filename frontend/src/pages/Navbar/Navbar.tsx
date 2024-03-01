@@ -11,6 +11,7 @@ function Navbar() {
         <Link to="/visits" className="navbar-link">Visits</Link>
         <Link to="/clients" className="navbar-link">Clients</Link>
         <Link to="/calendar" className="navbar-link">Calendar</Link>
+        <Link to="/visitRequest" className="navbar-link">Visit Requests</Link>
       </div>
       <LogoutButton />
     </nav>

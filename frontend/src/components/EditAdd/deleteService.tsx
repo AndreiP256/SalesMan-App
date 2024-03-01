@@ -47,3 +47,19 @@ export function usersDelete(user: any) {
         throw error;
     });
 }
+
+export function visitRequestDelete (visitRequest: any) {
+    const token = localStorage.getItem('token');
+    return axios.delete(process.env.REACT_APP_URL + '/visitRequest/' + visitRequest.id, {
+        headers: {
+            'Authorization': `Bearer ${token}`
+        }
+    })
+    .then(response => {
+        console.log(response);
+    })
+    .catch(error => {
+        console.error(error);
+        throw error;
+    });
+}
