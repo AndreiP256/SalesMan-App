@@ -39,7 +39,8 @@ function Table({ columns, data, onEdit, onDelete }: TableProps) {
 
     function handleEdit() {
         try {
-            onEdit(editedClient);
+            const { meetingTimeDate, nextMeetingDate, ...dataToSend } = editedClient;
+            onEdit(dataToSend);
             setIsEditing(false);
             setIsOpen(false);
         } catch (err) {
@@ -145,11 +146,11 @@ function Table({ columns, data, onEdit, onDelete }: TableProps) {
             type="date"
             value={(editedClient as any)[`${column}Date`]}
             onChange={(e) => {
-            const date = e.target.value;
-            setEditedClient((prevState: any) => ({
+                const date = e.target.value;
+                setEditedClient((prevState: any) => ({
                 ...prevState,
-                [column]: `${date}T${(prevState as any)[`${column}Time`] || '00:00:00.000'}Z`
-            }));
+                [`${column}Date`]: date
+                }));
             }}
         />
         <input

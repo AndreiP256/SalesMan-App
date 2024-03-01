@@ -42,15 +42,16 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
     
         try {
             console.log(formData);
+            const { meetingTimeDate, nextMeetingDate, ...dataToSend } = formData as { meetingTimeDate: string, nextMeetingDate: string };
             const response = await fetch(process.env.REACT_APP_URL + apiEndpoint, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${localStorage.getItem('token')}`,
                 },
-                body: JSON.stringify(formData),
+                body: JSON.stringify(dataToSend),
             });
-    
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
@@ -136,11 +137,11 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
                                         type="date"
                                         value={(formData as any)[`${column}Date`]}
                                         onChange={(e) => {
-                                        const date = e.target.value;
-                                        setFormData(prevState => ({
+                                            const date = e.target.value;
+                                            setFormData(prevState => ({
                                             ...prevState,
-                                            [column]: `${date}T${(prevState as any)[`${column}Time`] || '00:00:00.000'}Z`
-                                        }));
+                                            [`${column}Date`]: date
+                                            }));
                                         }}
                                     />
                                     <input
