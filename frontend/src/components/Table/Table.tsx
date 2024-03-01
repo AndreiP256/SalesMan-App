@@ -128,7 +128,7 @@ function Table({ columns, data, onEdit, onDelete }: TableProps) {
     uneditableColumns.includes(column) ? (
         <p key={column}>{column}: {(editedClient as any)[column]}</p>
     ) : (
-  <div key={column}>
+  <div key={column} className='need-padding'>
     <label>{column}:</label>
     {column === 'role' ? (
       <select

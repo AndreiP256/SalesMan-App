@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Modal from 'react-modal';
 import axios from 'axios';
+import './addService.css';
 
 
 interface AddFormProps {
@@ -120,8 +121,8 @@ export const AddForm = ({columns, addType }: AddFormProps) => {
                         uneditableColumns.includes(column) ? (
                             <p key={column}>{column}: {(formData as any)[column]}</p>
                         ) : (
-                            <div key={column}>
-                                <label>{column}:</label>
+                            <div key={column} className='need-padding'>
+                                <label>{column}: </label>
                                 {column === 'role' ? (
                                     <select
                                         value={(formData as any)[column]}
