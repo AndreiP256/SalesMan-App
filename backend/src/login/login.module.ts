@@ -7,16 +7,24 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtService } from '@nestjs/jwt';
+import { JwtAuthGuard } from './guards/JwtAuthGuard';
+import { RolesGuard } from './guards/rolesGuards';
+
+console.log('process.env.JWT_SECRET', process.env.JWT_SECRET);
 
 @Module({
     imports: [
-        JwtModule.register({
-            secret: process.env.JWT_SECRET,
-            signOptions: { expiresIn: '60s' },
-        }),
+        PrismaModule,
+        PassportModule,
+        JwtModule.registerAsync({
+            useFactory: () => ({
+              secret: process.env.JWT_SECRET,
+              signOptions: { expiresIn: '60s' },
+            }),
+          }),
     ],
-    providers: [LoginService, PrismaService, JwtStrategy, JwtService],
+    providers: [LoginService, PrismaService, JwtStrategy, JwtService, JwtAuthGuard, RolesGuard],
     controllers: [LoginController],
-    exports: [LoginService, JwtStrategy],
+    exports: [LoginService, JwtStrategy, RolesGuard, JwtAuthGuard],
 })
 export class LoginModule {}

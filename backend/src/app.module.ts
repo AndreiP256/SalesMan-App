@@ -8,10 +8,11 @@ import { UserModule } from './user/user.module';
 import { LoginModule } from './login/login.module';
 import { ClientModule } from './client/client.module';
 import { SalesAgentModule } from './sales-agent/sales-agent.module';
+import { JwtStrategy } from './login/strategies/jwt.strategy';
 
 @Module({
   imports: [VisitModule, DriverModule, ManagerModule, UserModule, LoginModule, ClientModule, SalesAgentModule],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, JwtStrategy],
 })
 export class AppModule {}

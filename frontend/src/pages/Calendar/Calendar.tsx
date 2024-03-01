@@ -8,12 +8,14 @@ import { Navigate } from 'react-router-dom';
 function MyCalendar() {
   const [events, setEvents] = useState([]);
   const [currentDate, setCurrentDate] = useState(new Date());
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkAuthentication = async () => {
         const authStatus = await checkAuth(); // replace with your auth checking function
         setIsAuthenticated(authStatus);
+        console.log(authStatus);
+        console.log(isAuthenticated);
 
         if (authStatus) {
             const date = moment(currentDate).format('YYYY-MM-DD');
@@ -35,6 +37,14 @@ function MyCalendar() {
     checkAuthentication();
   }, [currentDate]);
 
+  if (isAuthenticated === false) {
+    return <Navigate to="/login" replace />; // replace with your login route
+  }
+
+  if (isAuthenticated === null) {
+    return <div>Loading...</div>; // Or your own loading component
+  }
+
   const onPreviousDay = () => {
     setCurrentDate(prevDate => moment(prevDate).add(-1, 'day').toDate());
   };
@@ -43,13 +53,6 @@ function MyCalendar() {
     setCurrentDate(prevDate => moment(prevDate).add(1, 'day').toDate());
   };
 
-  if (isAuthenticated === false) {
-    return <Navigate to="/login" replace />; // replace with your login route
-  }
-
-  if (isAuthenticated === null) {
-    return <div>Loading...</div>; // Or your own loading component
-  }
   
 return (
   <div className="calendar">

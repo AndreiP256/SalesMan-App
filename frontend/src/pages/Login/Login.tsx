@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom';
+import { set } from 'date-fns';
 
 function LoginPage() {
+    const navigate = useNavigate();
     const [agentCode, setAgentCode] = useState('');
+    const [error, setError] = useState<string | null>(''); // [1
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
         const response = await fetch(process.env.REACT_APP_URL + '/login', {
@@ -14,10 +18,12 @@ function LoginPage() {
         });
         const data = await response.json();
         if (response.ok) {
-            localStorage.setItem('token', data.token);
-            // Redirect the user to the main page
+            console.log(data);
+            localStorage.setItem('token', data.access_token);
+            setError(null); // [2]
+            navigate('/users'); // [3]
         } else {
-            // Show an error message
+            setError(data.message); 
         }
     };
 
@@ -37,6 +43,7 @@ function LoginPage() {
                 <button type="submit" className="btn btn-primary">
                     Login
                 </button>
+                {error && <div className="alert alert-danger">{error}</div>}
             </form>
         </div>
     );
