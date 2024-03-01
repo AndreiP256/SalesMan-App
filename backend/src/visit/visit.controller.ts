@@ -13,8 +13,7 @@ export class VisitController {
   constructor(private readonly visitService: VisitService) {}
 
   @Post()
-  @Auth(UserRole.SALES_AGENT)
-  @Auth(UserRole.MANAGER)
+  @Auth(UserRole.MANAGER, UserRole.SALES_AGENT)
   async create(@Body() createVisitDto: Prisma.VisitCreateInput & { userId: number, clientId: number, invoice: number }) {
     return this.visitService.createVisit(createVisitDto);
   }
@@ -47,16 +46,14 @@ export class VisitController {
 
 
   @Put(':id')
-  @Auth(UserRole.SALES_AGENT)
-  @Auth(UserRole.MANAGER)
+  @Auth(UserRole.MANAGER, UserRole.SALES_AGENT)
   async update(@Param('id') id: string, @Body() updateVisitDto: Prisma.VisitUpdateInput & { userId: number, clientId: number, invoice: number, id: number}) {
     const visitId = Number(id); // Convert id to number
     return this.visitService.updateVisit(visitId, updateVisitDto);
   }
 
   @Delete(':id')
-  @Auth(UserRole.SALES_AGENT)
-  @Auth(UserRole.MANAGER)
+  @Auth(UserRole.MANAGER, UserRole.SALES_AGENT)
   async remove(@Param('id') id: string) {
     const visitId = Number(id); // Convert id to number
     return this.visitService.removeVisit(visitId);

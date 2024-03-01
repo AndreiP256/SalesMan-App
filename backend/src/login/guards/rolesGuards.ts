@@ -4,26 +4,35 @@ import { Prisma } from '@prisma/client';
 import { UserRole } from '@prisma/client';
 import { Observable } from 'rxjs';
 import { ROLES_KEY } from '../decorators/role.decorator';
+import * as jwt from 'jsonwebtoken';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-  constructor(private readonly reflector: Reflector) {}
+  constructor(private reflector: Reflector) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  canActivate(context: ExecutionContext): boolean {
     const requiredRoles = this.reflector.getAllAndOverride<UserRole[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
+    if (!requiredRoles) {
+      return true;
+    }
+    const request = context.switchToHttp().getRequest();
+    const token = request.headers.authorization?.split(' ')[1]; // Extract the token from the Authorization header
 
-    const req = context.switchToHttp().getRequest();
-    const role = req.user.role;
+    if (!token) {
+      return false; // If there's no token, deny the request
+    }
 
-    if (role === UserRole.MANAGER) return true;
-    else if (!requiredRoles || requiredRoles.length === 0) return true;
-    else if (!requiredRoles.find((r) => r === UserRole.MANAGER)) return true;
+    let userRole: UserRole;
+    try {
+      const decodedToken = jwt.verify(token, process.env.JWT_SECRET) as { role: UserRole }; // Verify and decode the token with the proper type
+      userRole = decodedToken.role; // Get the user's role from the decoded token
+    } catch (error) {
+      return false; // If the token can't be verified, deny the request
+    }
 
-    return false;
+    return requiredRoles.includes(userRole); // Check if the user's role is in the list of required roles
   }
 }
