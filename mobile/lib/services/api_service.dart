@@ -27,4 +27,33 @@ class ApiService {
     throw Exception(data['message']);
   }
   }
+
+  Future<bool> checkAuth() async {
+    final _storage = FlutterSecureStorage();
+    final token = await _storage.read(key: 'token');
+
+    if (token == null) {
+      return false;
+    }
+
+    final response = await http.get(
+      Uri.parse('$baseUrl/login/verify'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      return true;
+    } else {
+      await _storage.delete(key: 'token'); // Delete the token if it's not valid
+      return false;
+    }
+  }
+
+  Future<void> logout() async {
+    final _storage = FlutterSecureStorage();
+    await _storage.delete(key: 'token');
+  }
 }

@@ -3,10 +3,28 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/services/api_service.dart'; // Import the ApiService
 
-class LoginView extends StatelessWidget {
+class LoginView extends StatefulWidget {
+  @override
+  _LoginViewState createState() => _LoginViewState();
+}
+
+class _LoginViewState extends State<LoginView> {
   final _formKey = GlobalKey<FormState>();
   final _agentCodeController = TextEditingController(); // Controller for the agent code text field
   final _apiService = ApiService(); // Instance of the ApiService
+
+  @override
+  void initState() {
+    super.initState();
+    checkAuth();
+  }
+
+  void checkAuth() async {
+    bool isAuthenticated = await _apiService.checkAuth();
+    if (isAuthenticated) {
+      Navigator.pushNamed(context, '/dashboard');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
