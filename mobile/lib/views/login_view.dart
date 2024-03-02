@@ -1,9 +1,12 @@
 // lib/views/login_view.dart
 
 import 'package:flutter/material.dart';
+import 'package:mobile/services/api_service.dart'; // Import the ApiService
 
 class LoginView extends StatelessWidget {
   final _formKey = GlobalKey<FormState>();
+  final _agentCodeController = TextEditingController(); // Controller for the agent code text field
+  final _apiService = ApiService(); // Instance of the ApiService
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +21,7 @@ class LoginView extends StatelessWidget {
           child: Column(
             children: <Widget>[
               TextFormField(
+                controller: _agentCodeController, // Use the controller here
                 decoration: InputDecoration(labelText: 'Agent Code'),
                 validator: (value) {
                   if (value?.isEmpty ?? true) {
@@ -27,9 +31,19 @@ class LoginView extends StatelessWidget {
                 },
               ),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async { // Make the callback async
                   if (_formKey.currentState != null && _formKey.currentState!.validate()) {
                     // Process data.
+                    try {
+                      await _apiService.login(_agentCodeController.text); // Call the login function
+                      Navigator.pushNamed(context, '/dashboard');
+                      // Navigate to the next screen if login is successful
+                    } catch (e) {
+                      // Show an error message if login fails
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Login failed: $e')),
+                      );
+                    }
                   }
                 },
                 child: Text('Login'),

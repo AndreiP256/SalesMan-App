@@ -1,9 +1,12 @@
 // lib/main.dart
 
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'views/login_view.dart';
+import 'views/dashboard_view.dart';
 
-void main() {
+Future main() async {
+  await dotenv.load();
   runApp(ClientVisitApp());
 }
 
@@ -16,6 +19,9 @@ class ClientVisitApp extends StatelessWidget {
         primarySwatch: Colors.blue,
       ),
       home: LoginView(),
+      routes: {
+        '/dashboard': (context) => DashboardScreen(),
+      },
     );
   }
 }
