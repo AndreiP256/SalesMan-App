@@ -34,7 +34,8 @@ export class LoginService {
 
   async validateUser(payload: any): Promise<any> {
     // Get the username from the JWT payload
-    const agentCode = payload.agentCode;
+    const agentCode = payload.username;
+    console.log('agentCode', agentCode);
 
     // Find the user in the database
     const user = await this.prisma.user.findFirst({

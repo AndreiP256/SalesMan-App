@@ -31,6 +31,7 @@ export class UserController {
     @Get(':id/visits')
     async getUserVisits(@Param('id') id: string) {
         const userId = Number(id); // Convert id to number
+        console.log(await this.userService.getUserVisits(userId));
         return this.userService.getUserVisits(userId);
     }
 

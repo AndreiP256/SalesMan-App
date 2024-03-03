@@ -15,6 +15,11 @@ export async function checkAuth() {
       localStorage.removeItem('token');
       return false;
     }
-  
+
+    const data = await response.json();
+    if (data.role !== 'MANAGER') {
+      return false;
+    }
+    
     return true;
   }

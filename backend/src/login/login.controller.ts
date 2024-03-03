@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Get } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Req } from '@nestjs/common';
 import { LoginService } from './login.service';
 import { LoginUserDto } from './dto/login.dto';
 import { JwtAuthGuard } from './guards/JwtAuthGuard';
@@ -14,7 +14,8 @@ export class LoginController {
 
     @UseGuards(JwtAuthGuard)
     @Get('verify')
-    checkAuth() {
-        return { message: 'Authentificated' };
+    checkAuth(@Req() req) {
+        console.log('req.user', req.user);
+        return { userId: req.user.id, role: req.user.role};
     }
 }
