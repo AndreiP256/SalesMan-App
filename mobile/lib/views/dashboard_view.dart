@@ -3,6 +3,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mobile/services/api_service.dart'; // Import the ApiService
+import 'client_selection_view.dart';
+import 'package:url_launcher/url_launcher.dart';
+import 'meeting_screen.dart'; // Import your MeetingScreen
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -113,6 +116,49 @@ class _DashboardViewState extends State<DashboardScreen> {
                               'companyName']), // replace 'name' with the actual key for the client's name
                           subtitle:
                               Text(DateFormat('hh:mm a').format(visitDate)),
+                          onTap: () => showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              content: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 3,
+                                    child: ElevatedButton(
+                                      child: Text('Start Meeting'),
+                                      onPressed: () {
+                                        Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  MeetingScreen(clientId: visits[index]['clientId'],)),
+                                        );
+                                      },
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 1,
+                                    child: ElevatedButton(
+                                      child: Icon(Icons.map),
+                                      onPressed: () async {
+                                        final latitude = snapshot.data[
+                                            'latitude']; // Replace with your actual latitude and longitude keys
+                                        final longitude =
+                                            snapshot.data['longitude'];
+                                        final googleMapsUrl =
+                                            'https://www.google.com/maps/search/?api=1&query=$latitude,$longitude';
+
+                                        if (await canLaunch(googleMapsUrl)) {
+                                          await launch(googleMapsUrl);
+                                        } else {
+                                          throw 'Could not launch $googleMapsUrl';
+                                        }
+                                      },
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         );
                       }
                     },
@@ -120,6 +166,19 @@ class _DashboardViewState extends State<DashboardScreen> {
                 } else {
                   return Container(); // return an empty container for non-matching dates
                 }
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton(
+              child: Text('Am ajuns la client'),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ClientSelectionScreen()),
+                );
               },
             ),
           ),
