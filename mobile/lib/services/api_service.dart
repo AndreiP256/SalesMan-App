@@ -172,6 +172,8 @@ class ApiService {
     int? invoice,
     required String visitCode,
   }) async {
+    final _storage = FlutterSecureStorage();
+    final token = await _storage.read(key: 'token');
     final user_auth = await http.get(
       Uri.parse('$baseUrl/login/verify'),
       headers: <String, String>{
@@ -198,7 +200,7 @@ class ApiService {
         'userId': id,
       }),
     );
-
+    print("Token: $token");
     print(response.body);
 
     if (response.statusCode == 200) {
