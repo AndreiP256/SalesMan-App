@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/services/api_service.dart'; // Import the ApiService
 import 'meeting_screen.dart'; // Import your MeetingScreen
+import 'new_client_form_view.dart';
 
 class ClientSelectionScreen extends StatefulWidget {
   @override
@@ -52,7 +53,11 @@ class _ClientSelectionScreenState extends State<ClientSelectionScreen> {
             child: ElevatedButton(
             child: Text('Add New Client'),
             onPressed: () {
-              // navigate to the new client screen
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => NewClientFormView()),
+                );
             },
           ),
           ),

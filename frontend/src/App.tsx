@@ -17,7 +17,9 @@ import VisitRequestPage from "./pages/VisitRequestsPage/VisitRequestsPage";
 function App() {
   return (
     <BrowserRouter>
-      <Navbar />
+      <div className="nav-bar-bar">
+        <Navbar />
+      </div>
       <div className="page-content">
         <Routes>
           <Route path="/login" element={<LoginPage />} />

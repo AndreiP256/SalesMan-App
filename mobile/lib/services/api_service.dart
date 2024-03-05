@@ -213,4 +213,60 @@ class ApiService {
       throw Exception('Failed to create visit');
     }
   }
+
+  Future<int> createClient({
+  required String description,
+  required String companyName,
+  required String taxCode,
+  required double latitude,
+  required double longitude,
+  required String totalOrder,
+  required String clientCode,
+}) async {
+  final _storage = FlutterSecureStorage();
+    final token = await _storage.read(key: 'token');
+    final user_auth = await http.get(
+      Uri.parse('$baseUrl/login/verify'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    final data = jsonDecode(user_auth.body);
+    final id = data['userId'];
+
+  final response = await http.post(
+    Uri.parse('$baseUrl/clients'), // Replace with your API URL
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token',
+    },
+    body: jsonEncode(<String, dynamic>{
+      'description': description,
+      'companyName': companyName,
+      'taxCode': taxCode,
+      'latitude': latitude,
+      'longitude': longitude,
+      'totalOrder': totalOrder,
+      'clientCode': clientCode,
+      'salesAgentId': id,
+    }),
+  );
+
+  print(response.statusCode);
+  print(response.body);
+
+  if (response.statusCode == 200 || response.statusCode == 201) {
+    // If the server returns a 200 OK response,
+    // then parse the JSON.
+    print('Client created successfully');
+    var jsonResponse = jsonDecode(response.body);
+    return jsonResponse['id'];
+  } else {
+    // If the server did not return a 200 OK response,
+    // then throw an exception.
+    throw Exception('Failed to create client');
+  }
+}
 }
