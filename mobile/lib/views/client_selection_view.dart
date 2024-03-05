@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:mobile/services/api_service.dart'; // Import the ApiService
+import 'meeting_screen.dart'; // Import your MeetingScreen
 
 class ClientSelectionScreen extends StatefulWidget {
   @override
@@ -38,8 +39,10 @@ class _ClientSelectionScreenState extends State<ClientSelectionScreen> {
                 return ListTile(
                   title: Text(clients[index]['companyName']),
                   onTap: () {
-                    // handle client selection
-                    // navigate to the meeting setup screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => MeetingScreen(clientId: clients[index]['id'])),
+                    ); // Pass the client to the MeetingScreen
                   },
                 );
               },
