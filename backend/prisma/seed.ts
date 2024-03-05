@@ -1,4 +1,5 @@
 // prisma/seed.ts
+require('dotenv').config();
 
 import { PrismaClient, UserRole } from '@prisma/client';
 
