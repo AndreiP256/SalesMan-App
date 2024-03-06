@@ -41,6 +41,7 @@ export class VisitRequestService {
                 salesAgentId: userId
             }
         });
+        console.log("VisitRequest",userId, visitRequests);
         return visitRequests;
     }
 

@@ -130,7 +130,10 @@ class _DashboardViewState extends State<DashboardScreen> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  MeetingScreen(clientId: visits[index]['clientId'],)),
+                                                  MeetingScreen(
+                                                    clientId: visits[index]
+                                                        ['clientId'],
+                                                  )),
                                         );
                                       },
                                     ),
@@ -169,9 +172,42 @@ class _DashboardViewState extends State<DashboardScreen> {
               },
             ),
           ),
-          
-          
-
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: FutureBuilder<List<dynamic>>(
+                future: _apiService
+                    .fetchVisitsForCurrentUser(), // Replace with your user ID
+                builder: (BuildContext context,
+                    AsyncSnapshot<List<dynamic>> snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return CircularProgressIndicator();
+                  } else if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  } else {
+                    return ListView.builder(
+                      itemCount: snapshot.data?.length ?? 0,
+                      itemBuilder: (context, index) {
+                        var visit = snapshot.data?[index];
+                        return ListTile(
+                          title:
+                              Text('Requested Visit: ${visit['companyName']}'),
+                          subtitle: Text('Details: ${visit['date']}'),
+                          trailing: ElevatedButton(
+                            child: Icon(Icons.check),
+                            onPressed: () {
+                              _apiService.deleteVisitRequest(visit['id']);
+                              setState(() {});
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(

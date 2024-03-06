@@ -215,15 +215,15 @@ class ApiService {
   }
 
   Future<int> createClient({
-  required String description,
-  required String companyName,
-  required String taxCode,
-  required double latitude,
-  required double longitude,
-  required String totalOrder,
-  required String clientCode,
-}) async {
-  final _storage = FlutterSecureStorage();
+    required String description,
+    required String companyName,
+    required String taxCode,
+    required double latitude,
+    required double longitude,
+    required String totalOrder,
+    required String clientCode,
+  }) async {
+    final _storage = FlutterSecureStorage();
     final token = await _storage.read(key: 'token');
     final user_auth = await http.get(
       Uri.parse('$baseUrl/login/verify'),
@@ -236,42 +236,41 @@ class ApiService {
     final data = jsonDecode(user_auth.body);
     final id = data['userId'];
 
-  final response = await http.post(
-    Uri.parse('$baseUrl/clients'), // Replace with your API URL
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-      'Authorization': 'Bearer $token',
-    },
-    body: jsonEncode(<String, dynamic>{
-      'description': description,
-      'companyName': companyName,
-      'taxCode': taxCode,
-      'latitude': latitude,
-      'longitude': longitude,
-      'totalOrder': totalOrder,
-      'clientCode': clientCode,
-      'salesAgentId': id,
-    }),
-  );
+    final response = await http.post(
+      Uri.parse('$baseUrl/clients'), // Replace with your API URL
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+      body: jsonEncode(<String, dynamic>{
+        'description': description,
+        'companyName': companyName,
+        'taxCode': taxCode,
+        'latitude': latitude,
+        'longitude': longitude,
+        'totalOrder': totalOrder,
+        'clientCode': clientCode,
+        'salesAgentId': id,
+      }),
+    );
 
-  print(response.statusCode);
-  print(response.body);
+    print(response.statusCode);
+    print(response.body);
 
-  if (response.statusCode == 200 || response.statusCode == 201) {
-    // If the server returns a 200 OK response,
-    // then parse the JSON.
-    print('Client created successfully');
-    var jsonResponse = jsonDecode(response.body);
-    return jsonResponse['id'];
-  } else {
-    // If the server did not return a 200 OK response,
-    // then throw an exception.
-    throw Exception('Failed to create client');
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      // If the server returns a 200 OK response,
+      // then parse the JSON.
+      print('Client created successfully');
+      var jsonResponse = jsonDecode(response.body);
+      return jsonResponse['id'];
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to create client');
+    }
   }
-}
 
   Future<List<dynamic>> fetchVisitsForCurrentUser() async {
-
     final _storage = FlutterSecureStorage();
     final token = await _storage.read(key: 'token');
 
@@ -285,15 +284,36 @@ class ApiService {
 
     final data = jsonDecode(user_auth.body);
     final userId = data['userId'];
-    final response = await http.get(Uri.parse('&baseUrl/visitRequest/user/$userId'));
+    final response =
+        await http.get(Uri.parse('$baseUrl/visitRequest/user/$userId'));
 
-  if (response.statusCode == 200 || response.statusCode == 201) {
-    // If the server returns a 200 OK response, parse the JSON.
-    return jsonDecode(response.body);
-  } else {
-    // If the server did not return a 200 OK response,
-    // throw an exception.
-    throw Exception('Failed to load visits');
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      List<dynamic> visits = jsonDecode(response.body);
+      for (var visit in visits) {
+        final clientResponse =
+            await http.get(Uri.parse('$baseUrl/clients/${visit['clientId']}'));
+        if (clientResponse.statusCode == 200) {
+          var client = jsonDecode(clientResponse.body);
+          visit['companyName'] = client['companyName'];
+        } else {
+          throw Exception('Failed to load client');
+        }
+      }
+      return visits;
+    } else {
+      throw Exception('Failed to load visits');
+    }
   }
-}
+
+  Future<void> deleteVisitRequest(int id) async {
+    final _storage = FlutterSecureStorage();
+    final token = await _storage.read(key: 'token');
+    final response = await http.delete(
+      Uri.parse('$baseUrl/visitRequest/$id'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+  }
 }
