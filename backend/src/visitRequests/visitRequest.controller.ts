@@ -16,15 +16,21 @@ async create(@Body() createVisitRequestDto: Prisma.VisitRequestCreateInput & { u
     return this.visitRequestService.createVisitRequest(createVisitRequestDto);
 }
 
-@Get()
-async findAll() {
-    return this.visitRequestService.findAllVisitRequests();
-}
+  @Get()
+  async findAll() {
+      return this.visitRequestService.findAllVisitRequests();
+  }
 
   @Get(':id')
   async findOne(@Param('id') id: string) {
     const visitRequestId = Number(id); // Convert id to number
     return this.visitRequestService.findOneVisitRequest(visitRequestId);
+  }
+
+  @Get('user/:userId')
+  async findVistRequestsByUser(@Param('userId') userId: string) {
+    const parsedUserId = Number(userId); // Convert userId to number
+    return this.visitRequestService.findVistRequestsByUser(parsedUserId);
   }
 
   @Delete(':id')

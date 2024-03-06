@@ -269,4 +269,31 @@ class ApiService {
     throw Exception('Failed to create client');
   }
 }
+
+  Future<List<dynamic>> fetchVisitsForCurrentUser() async {
+
+    final _storage = FlutterSecureStorage();
+    final token = await _storage.read(key: 'token');
+
+    final user_auth = await http.get(
+      Uri.parse('$baseUrl/login/verify'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
+
+    final data = jsonDecode(user_auth.body);
+    final userId = data['userId'];
+    final response = await http.get(Uri.parse('&baseUrl/visitRequest/user/$userId'));
+
+  if (response.statusCode == 200 || response.statusCode == 201) {
+    // If the server returns a 200 OK response, parse the JSON.
+    return jsonDecode(response.body);
+  } else {
+    // If the server did not return a 200 OK response,
+    // throw an exception.
+    throw Exception('Failed to load visits');
+  }
+}
 }

@@ -35,6 +35,15 @@ export class VisitRequestService {
         return visitRequests;
     }
 
+    async findVistRequestsByUser(userId: number) {
+        const visitRequests = await this.prisma.visitRequest.findMany({
+            where: {
+                salesAgentId: userId
+            }
+        });
+        return visitRequests;
+    }
+
     async findOneVisitRequest(id: number) {
         const visitRequest = await this.prisma.visitRequest.findUnique({ where: { id } });
         return visitRequest;
