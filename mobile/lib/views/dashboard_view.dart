@@ -189,10 +189,16 @@ class _DashboardViewState extends State<DashboardScreen> {
                       itemCount: snapshot.data?.length ?? 0,
                       itemBuilder: (context, index) {
                         var visit = snapshot.data?[index];
-                        return ListTile(
+                        return Container (
+                         margin: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.purple[100], // light purple color
+                            borderRadius: BorderRadius.circular(10.0), // rounded edges
+                          ),
+                          child: ListTile(
                           title:
                               Text('Requested Visit: ${visit['companyName']}'),
-                          subtitle: Text('Details: ${visit['date']}'),
+                          subtitle: Text('Date: ${visit['date']}'),
                           trailing: ElevatedButton(
                             child: Icon(Icons.check),
                             onPressed: () {
@@ -200,6 +206,7 @@ class _DashboardViewState extends State<DashboardScreen> {
                               setState(() {});
                             },
                           ),
+                        ),
                         );
                       },
                     );
