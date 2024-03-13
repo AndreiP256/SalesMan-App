@@ -209,6 +209,7 @@ class _DashboardViewState extends State<DashboardScreen> {
                               setState(() {});
                             },
                           ),
+                          ),
                         );
                       },
                     );

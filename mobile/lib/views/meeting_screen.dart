@@ -89,6 +89,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Form(
           key: _formKey,
+          child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
               TextFormField(
@@ -160,6 +161,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                 },
               ),
             ],
+          ),
           ),
         ),
       ),
