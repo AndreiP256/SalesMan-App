@@ -25,7 +25,7 @@ class _LoginViewState extends State<LoginView> {
     bool isAuthenticated = await _apiService.checkAuth();
     if (isAuthenticated) {
       final _storage = FlutterSecureStorage();
-      String? role = await _storage.read(key: 'role') as String?;
+      String? role = await _storage.read(key: 'role');
       print("ROLE: $role");
       if (role == 'DRIVER') {
         Navigator.pushNamed(context, '/driver_dashboard');
@@ -69,7 +69,7 @@ class _LoginViewState extends State<LoginView> {
 
                       final _storage = FlutterSecureStorage();
                       String? role =
-                          await _storage.read(key: 'role') as String?;
+                          await _storage.read(key: 'role');
                       print("ROLE: $role");
                       if (role == 'DRIVER') {
                         Navigator.pushNamed(context, '/driver_dashboard');
