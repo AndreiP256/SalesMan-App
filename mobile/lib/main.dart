@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:mobile/views/driver_dashboard.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'views/login_view.dart';
 import 'views/dashboard_view.dart';
@@ -31,15 +32,18 @@ class ClientVisitApp extends StatelessWidget {
             if (snapshot.data == true) {
               return FutureBuilder<int?>(
                 future: _meetingClientId(),
-                builder: (BuildContext context, AsyncSnapshot<int?> clientIdSnapshot) {
-                  if (clientIdSnapshot.connectionState == ConnectionState.waiting) {
+                builder: (BuildContext context,
+                    AsyncSnapshot<int?> clientIdSnapshot) {
+                  if (clientIdSnapshot.connectionState ==
+                      ConnectionState.waiting) {
                     return CircularProgressIndicator();
                   } else if (clientIdSnapshot.hasError) {
                     return Text('Error: ${clientIdSnapshot.error}');
                   } else {
                     int? clientId = clientIdSnapshot.data;
                     // Use clientId here
-                    return MeetingScreen(clientId: clientId!); // Replace with your widget
+                    return MeetingScreen(
+                        clientId: clientId!); // Replace with your widget
                   }
                 },
               );
@@ -51,6 +55,7 @@ class ClientVisitApp extends StatelessWidget {
       ),
       routes: {
         '/dashboard': (context) => DashboardScreen(),
+        '/driver_dashboard': (context) => DriverDashboard(),
       },
     );
   }

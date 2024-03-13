@@ -27,6 +27,24 @@ class ApiService {
     if (response.statusCode >= 200 && response.statusCode < 300) {
       await FlutterSecureStorage()
           .write(key: 'token', value: data['access_token']);
+
+      // Add this block
+      final verifyResponse = await http.get(
+        Uri.parse('$baseUrl/login/verify'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+          'Authorization': 'Bearer ${data['access_token']}',
+        },
+      );
+      final verifyData = jsonDecode(verifyResponse.body);
+      if (verifyResponse.statusCode >= 200 && verifyResponse.statusCode < 300) {
+        await FlutterSecureStorage()
+            .write(key: 'role', value: verifyData['role']);
+      } else {
+        throw Exception(verifyData['message']);
+      }
+      // End of block
+
     } else {
       throw Exception(data['message']);
     }
@@ -49,9 +67,13 @@ class ApiService {
     );
 
     if (response.statusCode >= 200 && response.statusCode < 300) {
+      var responseBody = jsonDecode(response.body);
+      await _storage.write(key: 'role', value: responseBody['role']);
+      print("API ROLE: ${responseBody['role']}");
       return true;
     } else {
-      await _storage.delete(key: 'token'); // Delete the token if it's not valid
+      await _storage.delete(key: 'token');
+      await _storage.delete(key: 'role'); // Delete the token if it's not valid
       return false;
     }
   }
@@ -59,6 +81,7 @@ class ApiService {
   Future<void> logout() async {
     final _storage = FlutterSecureStorage();
     await _storage.delete(key: 'token');
+    await _storage.delete(key: 'role');
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
@@ -114,20 +137,24 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>> getClients() async {
-    // Append /clients to the base URL
-    var url = Uri.parse('$baseUrl/clients');
+  Future<List<dynamic>> getClients() async {
+    final _storage = FlutterSecureStorage();
+    final token = await _storage.read(key: 'token');
 
-    // Send a GET request to the API
-    var response = await http.get(url);
+    final response = await http.get(
+      Uri.parse('$baseUrl/clients'), // replace with your actual endpoint
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer $token',
+      },
+    );
 
-    // If the request was successful, parse the JSON response and return it
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      // If the request was not successful, throw an error
-      throw Exception('Failed to load clients');
+    final clients = jsonDecode(response.body);
+    print(clients);
+    if (clients is! List) {
+      throw Exception('Unexpected response format: ${response.body}');
     }
+    return clients;
   }
 
   Future<List<dynamic>> getUserClients() async {
