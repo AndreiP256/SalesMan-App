@@ -6,6 +6,7 @@ import 'package:mobile/services/api_service.dart'; // Import the ApiService
 import 'client_selection_view.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'meeting_screen.dart'; // Import your MeetingScreen
+import 'new_visit_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   @override
@@ -190,24 +191,25 @@ class _DashboardViewState extends State<DashboardScreen> {
                       itemCount: snapshot.data?.length ?? 0,
                       itemBuilder: (context, index) {
                         var visit = snapshot.data?[index];
-                        return Container (
-                         margin: EdgeInsets.all(8.0),
+                        return Container(
+                          margin: EdgeInsets.all(8.0),
                           decoration: BoxDecoration(
                             color: Colors.purple[100], // light purple color
-                            borderRadius: BorderRadius.circular(10.0), // rounded edges
+                            borderRadius:
+                                BorderRadius.circular(10.0), // rounded edges
                           ),
                           child: ListTile(
-                          title:
-                              Text('Requested Visit: ${visit['companyName']}'),
-                          subtitle: Text('Date: ${visit['date']}'),
-                          trailing: ElevatedButton(
-                            child: Icon(Icons.check),
-                            onPressed: () {
-                              _apiService.deleteVisitRequest(visit['id']);
-                              setState(() {});
-                            },
+                            title: Text(
+                                'Requested Visit: ${visit['companyName']}'),
+                            subtitle: Text('Date: ${visit['date']}'),
+                            trailing: ElevatedButton(
+                              child: Icon(Icons.check),
+                              onPressed: () {
+                                _apiService.deleteVisitRequest(visit['id']);
+                                setState(() {});
+                              },
+                            ),
                           ),
-                        ),
                         );
                       },
                     );
@@ -218,15 +220,33 @@ class _DashboardViewState extends State<DashboardScreen> {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              child: Text('Am ajuns la client'),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ClientSelectionScreen()),
-                );
-              },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                ElevatedButton(
+                  child: Text('Am ajuns la client'),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => ClientSelectionScreen(),
+                      ),
+                    );
+                  },
+                ),
+                SizedBox(width: 10), // Add some horizontal space between the buttons
+                ElevatedButton(
+                  child: Text('Adauga Vizita'),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => NewVisitScreen(),
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
           ),
         ],

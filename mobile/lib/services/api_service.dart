@@ -230,7 +230,7 @@ class ApiService {
     print("Token: $token");
     print(response.body);
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       // If the server returns a 200 OK response,
       // then parse the JSON.
       print('Visit created successfully');
