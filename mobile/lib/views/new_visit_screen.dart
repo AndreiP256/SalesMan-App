@@ -91,6 +91,8 @@ class _NewVisitScreenState extends State<NewVisitScreen> {
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return 'Please enter an invoice';
+                } else if (int.tryParse(value) == null) {
+                  return 'Please enter a valid number';
                 }
                 return null;
               },
@@ -119,6 +121,12 @@ class _NewVisitScreenState extends State<NewVisitScreen> {
         child: Icon(Icons.save),
        onPressed: () async {
         if (_formKey.currentState!.validate()) {
+              if (_meetingTime == null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('Please select a date')),
+            );
+            return;
+          }
           _formKey.currentState!.save();
           try {
             await _apiService.createVisit(

@@ -12,6 +12,7 @@ class MeetingScreen extends StatefulWidget {
 
 class _MeetingScreenState extends State<MeetingScreen> {
   final _summaryController = TextEditingController();
+  final _formKey = GlobalKey<FormState>();
   final _invoiceValueController = TextEditingController();
   final _visitCodeController = TextEditingController();
   late DateTime _meetingStartTime;
@@ -24,13 +25,14 @@ class _MeetingScreenState extends State<MeetingScreen> {
   }
 
   Future<void> _startMeeting(int clientId) async {
-  _meetingStartTime = DateTime.now();
+    _meetingStartTime = DateTime.now();
 
-  // Save meeting start time and client ID to shared preferences
-  final prefs = await SharedPreferences.getInstance();
-  await prefs.setString('meetingStartTime', _meetingStartTime.toIso8601String());
-  await prefs.setInt('clientId', clientId);
-}
+    // Save meeting start time and client ID to shared preferences
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setString(
+        'meetingStartTime', _meetingStartTime.toIso8601String());
+    await prefs.setInt('clientId', clientId);
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -51,17 +53,18 @@ class _MeetingScreenState extends State<MeetingScreen> {
     String summary = _summaryController.text;
     String invoiceValue = _invoiceValueController.text;
     String visitCode = _visitCodeController.text;
-    print('Meeting ended. Summary: $summary, Invoice Value: $invoiceValue, Visit Code: $visitCode');
+    print(
+        'Meeting ended. Summary: $summary, Invoice Value: $invoiceValue, Visit Code: $visitCode');
 
     ApiService apiService = ApiService();
     apiService.createVisit(
-    clientId: widget.clientId, // replace with your client ID
-    meetingTime: _meetingStartTime,
-    conclusion: _summaryController.text,
-    nextMeeting: _selectedDate, // replace with your selected date
-    invoice: int.tryParse(_invoiceValueController.text),
-    visitCode: _visitCodeController.text,
-  );
+      clientId: widget.clientId, // replace with your client ID
+      meetingTime: _meetingStartTime,
+      conclusion: _summaryController.text,
+      nextMeeting: _selectedDate, // replace with your selected date
+      invoice: int.tryParse(_invoiceValueController.text),
+      visitCode: _visitCodeController.text,
+    );
 
     // Clear meeting start time from shared preferences
     final prefs = await SharedPreferences.getInstance();
@@ -75,8 +78,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
       MaterialPageRoute(builder: (context) => DashboardScreen()),
     );
   }
-
-  @override
+@override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -85,46 +87,80 @@ class _MeetingScreenState extends State<MeetingScreen> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: <Widget>[
-            TextField(
-              controller: _summaryController,
-              minLines: 3,
-              maxLines: 5,
-              decoration: InputDecoration(
-                labelText: 'Meeting Summary',
-                border: OutlineInputBorder(),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              TextFormField(
+                controller: _summaryController,
+                minLines: 3,
+                maxLines: 5,
+                decoration: InputDecoration(
+                  labelText: 'Meeting Summary',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a meeting summary';
+                  }
+                  return null;
+                },
               ),
-            ),
-            TextField(
-              controller: _invoiceValueController,
-              decoration: InputDecoration(
-                labelText: 'Invoice Value',
-                border: OutlineInputBorder(),
+              TextFormField(
+                controller: _invoiceValueController,
+                decoration: InputDecoration(
+                  labelText: 'Invoice Value',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter an invoice value';
+                  } else if (int.tryParse(value) == null) {
+                    return 'Please enter a valid number';
+                  }
+                  return null;
+                },
               ),
-            ),
-            TextField(
-              controller: _visitCodeController,
-              decoration: InputDecoration(
-                labelText: 'Visit Code',
-                border: OutlineInputBorder(),
+              TextFormField(
+                controller: _visitCodeController,
+                decoration: InputDecoration(
+                  labelText: 'Visit Code',
+                  border: OutlineInputBorder(),
+                ),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Please enter a visit code';
+                  }
+                  return null;
+                },
               ),
-            ),
-            SizedBox(height: 8.0),
-            TextButton(
-              child: Text('Select Next Meeting Date'),
-              onPressed: () => _selectDate(context),
-            ),
-            TextButton(
-              child: Text('End Meeting'),
-              style: ButtonStyle(
-                backgroundColor:
-                    MaterialStateProperty.all<Color>(Colors.purple),
-                foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+              SizedBox(height: 8.0),
+              TextButton(
+                child: Text('Select Next Meeting Date'),
+                onPressed: () => _selectDate(context),
               ),
-              onPressed: _endMeeting,
-            ),
-          ],
+              TextButton(
+                child: Text('End Meeting'),
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.purple),
+                  foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                ),
+                onPressed: () async {
+                  if (_formKey.currentState!.validate()) {
+                    if (_selectedDate == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Please select a date')),
+                      );
+                      return;
+                    }
+                    _formKey.currentState!.save();
+                    await _endMeeting();
+                  }
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -15,7 +15,7 @@ export class ClientController {
         ) {}
 
     @Post()
-    @Auth(UserRole.MANAGER)
+    @Auth(UserRole.MANAGER, UserRole.SALES_AGENT)
     async create(@Body() CreateClientDto: Prisma.ClientCreateInput & { salesAgentId: number }) {
         return this.clientService.createClient(CreateClientDto);
     }
