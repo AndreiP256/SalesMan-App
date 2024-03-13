@@ -40,7 +40,7 @@ class _DashboardViewState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Dashboard'),
+        title: Text('Calendar Vizite'),
         automaticallyImplyLeading: false,
         actions: <Widget>[
           IconButton(
@@ -199,16 +199,15 @@ class _DashboardViewState extends State<DashboardScreen> {
                                 BorderRadius.circular(10.0), // rounded edges
                           ),
                           child: ListTile(
-                            title: Text(
-                                'Requested Visit: ${visit['companyName']}'),
-                            subtitle: Text('Date: ${visit['date']}'),
-                            trailing: ElevatedButton(
-                              child: Icon(Icons.check),
-                              onPressed: () {
-                                _apiService.deleteVisitRequest(visit['id']);
-                                setState(() {});
-                              },
-                            ),
+                          title:
+                              Text('Vizită cerută: ${visit['companyName']}'),
+                          subtitle: Text('Dată: ${visit['date']}'),
+                          trailing: ElevatedButton(
+                            child: Icon(Icons.check),
+                            onPressed: () {
+                              _apiService.deleteVisitRequest(visit['id']);
+                              setState(() {});
+                            },
                           ),
                         );
                       },

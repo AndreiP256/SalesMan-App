@@ -33,7 +33,7 @@ class _NewVisitScreenState extends State<NewVisitScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('New Visit'),
+        title: Text('Vizita Noua'),
       ),
       body: Form(
         key: _formKey,
@@ -59,7 +59,7 @@ class _NewVisitScreenState extends State<NewVisitScreen> {
                     },
                     validator: (value) {
                       if (value == null) {
-                        return 'Please select a client';
+                        return 'Te rog selectează un client';
                       }
                       return null;
                     },
@@ -72,46 +72,46 @@ class _NewVisitScreenState extends State<NewVisitScreen> {
               },
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: 'Conclusion'),
+              decoration: InputDecoration(labelText: 'Concluzie'),
               onSaved: (value) {
                 _conclusion = value ?? '';
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a conclusion';
+                  return 'Te rog introdu concluzia';
                 }
                 return null;
               },
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: 'Invoice'),
+              decoration: InputDecoration(labelText: 'Valoare Factură'),
               onSaved: (value) {
                 _invoice = int.tryParse(value ?? '');
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter an invoice';
+                  return 'Te rog introdu valoarea facturii';
                 } else if (int.tryParse(value) == null) {
-                  return 'Please enter a valid number';
+                  return 'Te rog introdu un număr valid';
                 }
                 return null;
               },
             ),
             TextFormField(
-              decoration: InputDecoration(labelText: 'Visit Code'),
+              decoration: InputDecoration(labelText: 'Cod Vizită'),
               onSaved: (value) {
                 _visitCode = value ?? '';
               },
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Please enter a visit code';
+                  return 'Te rog introdu codul vizitei';
                 }
                 return null;
               },
             ),
             ElevatedButton(
               onPressed: () => _selectDate(context),
-              child: Text('Select date'),
+              child: Text('Selectează data întâlnirii'),
             ),
             // Add more fields here
           ],
@@ -123,7 +123,7 @@ class _NewVisitScreenState extends State<NewVisitScreen> {
         if (_formKey.currentState!.validate()) {
               if (_meetingTime == null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Please select a date')),
+              SnackBar(content: Text('Te rog selectează data întâlnirii')),
             );
             return;
           }

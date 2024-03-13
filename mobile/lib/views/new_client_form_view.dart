@@ -58,30 +58,30 @@ class _NewClientFormViewState extends State<NewClientFormView> {
                             children: <Widget>[
                                 TextFormField(
                                     controller: _descriptionController,
-                                    decoration: InputDecoration(labelText: 'Description'),
+                                    decoration: InputDecoration(labelText: 'Descriere client'),
                                     validator: (value) {
                                         if (value == null || value.isEmpty) {
-                                            return 'Please enter a description';
+                                            return 'Te rog introdu descrierea clientului';
                                         }
                                         return null;
                                     },
                                 ),
                                 TextFormField(
                                     controller: _companyNameController,
-                                    decoration: InputDecoration(labelText: 'Company Name'),
+                                    decoration: InputDecoration(labelText: 'Nume Companie'),
                                     validator: (value) {
                                         if (value == null || value.isEmpty) {
-                                            return 'Please enter a company name';
+                                            return 'Te rog introdu numele companiei';
                                         }
                                         return null;
                                     },
                                 ),
                                 TextFormField(
                                     controller: _taxCodeController,
-                                    decoration: InputDecoration(labelText: 'Tax Code'),
+                                    decoration: InputDecoration(labelText: 'Cod Fiscal'),
                                     validator: (value) {
                                         if (value == null || value.isEmpty) {
-                                            return 'Please enter a tax code';
+                                            return 'Te rog introdu codul fiscal';
                                         }
                                         return null;
                                     },
@@ -89,20 +89,20 @@ class _NewClientFormViewState extends State<NewClientFormView> {
                                 if (_currentPosition != null) Text('Latitude: ${_currentPosition!.latitude}, Longitude: ${_currentPosition!.longitude}'),
                                 TextFormField(
                                     controller: _totalOrderController,
-                                    decoration: InputDecoration(labelText: 'Total Order'),
+                                    decoration: InputDecoration(labelText: 'Comanda Totala'),
                                     validator: (value) {
                                         if (value == null || value.isEmpty) {
-                                            return 'Please enter a total order';
+                                            return 'Te rog introdu comanda totala';
                                         }
                                         return null;
                                     },
                                 ),
                                 TextFormField(
                                     controller: _clientCodeController,
-                                    decoration: InputDecoration(labelText: 'Client Code'),
+                                    decoration: InputDecoration(labelText: 'Cod Client'),
                                     validator: (value) {
                                         if (value == null || value.isEmpty) {
-                                            return 'Please enter a client code';
+                                            return 'Te rog introdu codul clientului';
                                         }
                                         return null;
                                     },
@@ -139,7 +139,7 @@ class _NewClientFormViewState extends State<NewClientFormView> {
                                             }
                                         }
                                     },
-                                    child: Text('Submit'),
+                                    child: Text('Trimite'),
                                 ),
                             ],
                         ),

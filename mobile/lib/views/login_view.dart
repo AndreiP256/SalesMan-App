@@ -49,10 +49,10 @@ class _LoginViewState extends State<LoginView> {
             children: <Widget>[
               TextFormField(
                 controller: _agentCodeController, // Use the controller here
-                decoration: InputDecoration(labelText: 'Agent Code'),
+                decoration: InputDecoration(labelText: 'Cod Agent'),
                 validator: (value) {
                   if (value?.isEmpty ?? true) {
-                    return 'Please enter your Agent Code';
+                    return 'Te rog introdu codul agentului';
                   }
                   return null;
                 },

@@ -96,12 +96,12 @@ class _MeetingScreenState extends State<MeetingScreen> {
                 minLines: 3,
                 maxLines: 5,
                 decoration: InputDecoration(
-                  labelText: 'Meeting Summary',
+                  labelText: 'Concluzie întâlnire',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a meeting summary';
+                    return 'Te rog introdu concluzia întâlnirii';
                   }
                   return null;
                 },
@@ -109,14 +109,14 @@ class _MeetingScreenState extends State<MeetingScreen> {
               TextFormField(
                 controller: _invoiceValueController,
                 decoration: InputDecoration(
-                  labelText: 'Invoice Value',
+                  labelText: 'Valoare Factură',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter an invoice value';
+                    return 'Te rog introdu valoarea facturii';
                   } else if (int.tryParse(value) == null) {
-                    return 'Please enter a valid number';
+                    return 'Te rog introdu un numar valid';
                   }
                   return null;
                 },
@@ -124,19 +124,19 @@ class _MeetingScreenState extends State<MeetingScreen> {
               TextFormField(
                 controller: _visitCodeController,
                 decoration: InputDecoration(
-                  labelText: 'Visit Code',
+                  labelText: 'Cod Vizită',
                   border: OutlineInputBorder(),
                 ),
                 validator: (value) {
                   if (value == null || value.isEmpty) {
-                    return 'Please enter a visit code';
+                    return 'Te rog introdu codul vizitei';
                   }
                   return null;
                 },
               ),
               SizedBox(height: 8.0),
               TextButton(
-                child: Text('Select Next Meeting Date'),
+                child: Text('Selectează data întâlnirii'),
                 onPressed: () => _selectDate(context),
               ),
               TextButton(
@@ -150,7 +150,7 @@ class _MeetingScreenState extends State<MeetingScreen> {
                   if (_formKey.currentState!.validate()) {
                     if (_selectedDate == null) {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('Please select a date')),
+                        SnackBar(content: Text('Te rog selectează data întâlnirii')),
                       );
                       return;
                     }

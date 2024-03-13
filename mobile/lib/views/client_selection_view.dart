@@ -29,7 +29,7 @@ class _ClientSelectionScreenState extends State<ClientSelectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Client'),
+        title: Text('Selectează clientul'),
       ),
       body: Column(
         children: [
@@ -51,7 +51,7 @@ class _ClientSelectionScreenState extends State<ClientSelectionScreen> {
           ),
           Padding(padding:const EdgeInsets.all(8.0),
             child: ElevatedButton(
-            child: Text('Add New Client'),
+            child: Text('Adaugă client nou'),
             onPressed: () {
               Navigator.push(
                   context,
