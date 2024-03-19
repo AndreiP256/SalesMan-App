@@ -112,42 +112,40 @@ class _NewClientFormViewState extends State<NewClientFormView> {
                               .getClientByTaxCode(_taxCodeController.text);
                           print(existingClient);
                           if (existingClient != null) {
-                            // If the client exists, display a dialog with the agent to whom the client belongs
-                            // and the conclusions of the meetings with the client
-
-                            print("EXISTING CLIENT: $existingClient");
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Client already exists'),
-                                  content: Text(
-                                      'This client belongs to agent ${existingClient['agent']}. Do you want to start a meeting?'),
-                                  actions: [
-                                    TextButton(
-                                      child: Text('No'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                    TextButton(
-                                      child: Text('Yes'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => MeetingScreen(
-                                                clientId: existingClient['id']),
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          } else {
+                          var agent = await apiService.getUserById(existingClient['salesAgentId']);
+                          var agentName = agent != null ? agent['name'] : 'Unknown';
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Text('Client already exists'),
+                                content: Text(
+                                    'This client belongs to agent $agentName. Do you want to start a meeting?'),
+                                actions: [
+                                  TextButton(
+                                    child: Text('No'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                    },
+                                  ),
+                                  TextButton(
+                                    child: Text('Yes'),
+                                    onPressed: () {
+                                      Navigator.of(context).pop();
+                                      Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => MeetingScreen(
+                                              clientId: existingClient['id']),
+                                        ),
+                                      );
+                                    },
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        } else {
                             print("CLIENT DOES NOT EXIST");
                             // If the client does not exist, create a new client
                             int clientId = await apiService.createClient(

@@ -353,13 +353,31 @@ class ApiService {
     },
   );
 
-  print(response.body);
 
   if (response.statusCode == 200 || response.statusCode == 201) {
     var jsonResponse = jsonDecode(response.body);
-    if (jsonResponse['data'] != null) {
-      return jsonResponse['data'];
-    }
+      return jsonResponse;
+  }
+
+  // If the server responds with a status code other than 200 or 201, or if jsonResponse['data'] is null,
+  // return null.
+  return null;
+}
+
+Future<Map<String, dynamic>?> getUserById(int id) async {
+  final _storage = FlutterSecureStorage();
+  final token = await _storage.read(key: 'token');
+  final response = await http.get(
+    Uri.parse('$baseUrl/user/$id'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  if (response.statusCode == 200 || response.statusCode == 201) {
+    var jsonResponse = jsonDecode(response.body);
+    return jsonResponse;
   }
 
   // If the server responds with a status code other than 200 or 201, or if jsonResponse['data'] is null,
