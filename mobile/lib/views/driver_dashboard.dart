@@ -33,6 +33,23 @@ class _DriverDashboardState extends State<DriverDashboard> {
         title: Text('Driver Dashboard'),
         actions: <Widget>[
           IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () async {
+              print('Search button pressed'); // Debug statement
+              var clientsFuture = _apiService.getClients();
+              print('Got clients future: $clientsFuture'); // Debug statement
+              var clients = await clientsFuture;
+              var mappedClients = clients.map((client) => client as Map<String, dynamic>).toList();
+              showSearch(
+                context: context,
+                delegate: ClientSearch(
+                  Future.value(mappedClients),
+                  _launchMapsUrl,
+                ),
+              );
+            },
+          ),
+          IconButton(
             icon: Icon(Icons.logout),
             onPressed: logout,
           ),
@@ -65,6 +82,72 @@ class _DriverDashboardState extends State<DriverDashboard> {
           }
         },
       ),
+    );
+  }
+}
+
+class ClientSearch extends SearchDelegate {
+  final Future<List<Map<String, dynamic>>> clientsFuture;
+  final Function(double, double) launchMapsUrl;
+
+  ClientSearch(this.clientsFuture, this.launchMapsUrl);
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return Container();
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    return FutureBuilder(
+      future: clientsFuture,
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(child: CircularProgressIndicator());
+        }
+
+        final suggestions = snapshot.data?.where((client) {
+          return client['companyName'].toLowerCase().contains(query.toLowerCase());
+        }).toList();
+
+        return ListView.builder(
+          itemCount: suggestions?.length ?? 0,
+          itemBuilder: (context, index) {
+            var client = suggestions?[index];
+            return ListTile(
+              title: Text(client?['companyName'] ?? ''),
+              trailing: ElevatedButton(
+                child: Icon(Icons.map),
+                onPressed: () {
+                  launchMapsUrl(client?['latitude'].toDouble(), client?['longitude'].toDouble());
+                },
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }

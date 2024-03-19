@@ -30,6 +30,23 @@ class _ClientSelectionScreenState extends State<ClientSelectionScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Selectează clientul'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () async {
+              final results = await showSearch(
+                context: context,
+                delegate: ClientSearch(clients),
+              );
+              if (results != null && results is Map<String, dynamic>) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MeetingScreen(clientId: results['id'])),
+                );
+              }
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -62,6 +79,71 @@ class _ClientSelectionScreenState extends State<ClientSelectionScreen> {
           ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class ClientSearch extends SearchDelegate<Map<String, dynamic>> {
+  final List<dynamic> clients;
+
+  ClientSearch(this.clients);
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: AnimatedIcon(
+        icon: AnimatedIcons.menu_arrow,
+        progress: transitionAnimation,
+      ),
+      onPressed: () {
+        close(context, {});
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    final suggestionList = clients.where((client) {
+      return client['companyName'].toLowerCase().contains(query.toLowerCase());
+    }).toList();
+
+    return ListView.builder(
+      itemCount: suggestionList.length,
+      itemBuilder: (context, index) => ListTile(
+        title: Text(suggestionList[index]['companyName']),
+        onTap: () {
+          close(context, suggestionList[index]);
+        },
+      ),
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final suggestionList = clients.where((client) {
+      return client['companyName'].toLowerCase().contains(query.toLowerCase());
+    }).toList();
+
+    return ListView.builder(
+      itemCount: suggestionList.length,
+      itemBuilder: (context, index) => ListTile(
+        title: Text(suggestionList[index]['companyName']),
+        onTap: () {
+          close(context, suggestionList[index]);
+        },
       ),
     );
   }
