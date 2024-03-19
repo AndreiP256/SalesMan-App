@@ -28,7 +28,7 @@ model Client {
   id           Int      @id @default(autoincrement())
   description  String
   companyName  String
-  taxCode      String
+  taxCode      String   @unique
   phones       Phone[]
   emails       Email[]
   latitude     Float
@@ -36,7 +36,6 @@ model Client {
   totalOrder   Float
   salesAgent   User     @relation(fields: [salesAgentId], references: [id])
   salesAgentId Int
-  clientCode   String   @unique
   visits       Visit[]
   requestedVisits VisitRequest[] @relation("ClientToVisitRequest")
 }
@@ -49,7 +48,6 @@ model Visit {
   conclusion  String
   nextMeeting DateTime
   invoice     Float
-  visitCode   String   @unique
   user        User     @relation(fields: [userId], references: [id])
   userId      Int
 }

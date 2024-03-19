@@ -14,7 +14,6 @@ class _NewVisitScreenState extends State<NewVisitScreen> {
   String _conclusion = '';
   DateTime? _nextMeeting;
   int? _invoice;
-  String _visitCode = '';
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -97,18 +96,6 @@ class _NewVisitScreenState extends State<NewVisitScreen> {
                 return null;
               },
             ),
-            TextFormField(
-              decoration: InputDecoration(labelText: 'Cod Vizită'),
-              onSaved: (value) {
-                _visitCode = value ?? '';
-              },
-              validator: (value) {
-                if (value == null || value.isEmpty) {
-                  return 'Te rog introdu codul vizitei';
-                }
-                return null;
-              },
-            ),
             ElevatedButton(
               onPressed: () => _selectDate(context),
               child: Text('Selectează data întâlnirii'),
@@ -135,7 +122,6 @@ class _NewVisitScreenState extends State<NewVisitScreen> {
               conclusion: _conclusion,
               nextMeeting: _meetingTime,
               invoice: _invoice,
-              visitCode: _visitCode,
             );
             Navigator.pop(context);
           } catch (e) {

@@ -15,7 +15,6 @@ class _NewClientFormViewState extends State<NewClientFormView> {
     final _companyNameController = TextEditingController();
     final _taxCodeController = TextEditingController();
     final _totalOrderController = TextEditingController();
-    final _clientCodeController = TextEditingController();
     Position? _currentPosition;
 
     @override
@@ -97,16 +96,6 @@ class _NewClientFormViewState extends State<NewClientFormView> {
                                         return null;
                                     },
                                 ),
-                                TextFormField(
-                                    controller: _clientCodeController,
-                                    decoration: InputDecoration(labelText: 'Cod Client'),
-                                    validator: (value) {
-                                        if (value == null || value.isEmpty) {
-                                            return 'Te rog introdu codul clientului';
-                                        }
-                                        return null;
-                                    },
-                                ),
                                 ElevatedButton(
                                     onPressed: () async {
                                         if (_formKey.currentState?.validate() ?? false) {
@@ -123,7 +112,6 @@ class _NewClientFormViewState extends State<NewClientFormView> {
                                                         latitude: _currentPosition!.latitude,
                                                         longitude: _currentPosition!.longitude,
                                                         totalOrder: double.parse(_totalOrderController.text).toString(),
-                                                        clientCode: _clientCodeController.text,
                                                     );
                                                     Navigator.push(
                                                         context,

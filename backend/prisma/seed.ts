@@ -27,7 +27,6 @@ async function main() {
         latitude: i,
         longitude: i,
         totalOrder: i,
-        clientCode: `CC123${i}`,
         salesAgent: {
           connect: {
             id: user.id,
@@ -56,7 +55,6 @@ async function main() {
         conclusion: `Test conclusion ${i}`,
         nextMeeting: new Date(),
         invoice: i * 100,
-        visitCode: `VC123${i}`,
         clientId: client.id,
         userId: user.id,
       },

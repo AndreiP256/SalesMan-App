@@ -197,7 +197,6 @@ class ApiService {
     required String conclusion,
     DateTime? nextMeeting,
     int? invoice,
-    required String visitCode,
   }) async {
     final _storage = FlutterSecureStorage();
     final token = await _storage.read(key: 'token');
@@ -223,7 +222,6 @@ class ApiService {
         'conclusion': conclusion,
         'nextMeeting': '${nextMeeting?.toIso8601String()}Z',
         'invoice': invoice,
-        'visitCode': visitCode,
         'userId': id,
       }),
     );
@@ -248,7 +246,6 @@ class ApiService {
     required double latitude,
     required double longitude,
     required String totalOrder,
-    required String clientCode,
   }) async {
     final _storage = FlutterSecureStorage();
     final token = await _storage.read(key: 'token');
@@ -276,7 +273,6 @@ class ApiService {
         'latitude': latitude,
         'longitude': longitude,
         'totalOrder': totalOrder,
-        'clientCode': clientCode,
         'salesAgentId': id,
       }),
     );

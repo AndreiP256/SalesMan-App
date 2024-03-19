@@ -36,7 +36,7 @@ function VisitsPage() {
         return <div>Loading...</div>; // Or your own loading component
     }
 
-    const columns = ['id', 'clientId', 'meetingTime', 'conclusion', 'nextMeeting', 'invoice', 'visitCode', 'userId']; // replace with your actual columns
+    const columns = ['id', 'clientId', 'meetingTime', 'conclusion', 'nextMeeting', 'invoice', 'userId']; // replace with your actual columns
 
     return (
         <div>

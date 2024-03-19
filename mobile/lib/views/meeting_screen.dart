@@ -14,7 +14,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
   final _summaryController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   final _invoiceValueController = TextEditingController();
-  final _visitCodeController = TextEditingController();
   late DateTime _meetingStartTime;
   DateTime? _selectedDate;
 
@@ -52,9 +51,8 @@ class _MeetingScreenState extends State<MeetingScreen> {
     // For example, you can save the summary to your database.
     String summary = _summaryController.text;
     String invoiceValue = _invoiceValueController.text;
-    String visitCode = _visitCodeController.text;
     print(
-        'Meeting ended. Summary: $summary, Invoice Value: $invoiceValue, Visit Code: $visitCode');
+        'Meeting ended. Summary: $summary, Invoice Value: $invoiceValue');
 
     ApiService apiService = ApiService();
     apiService.createVisit(
@@ -63,7 +61,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
       conclusion: _summaryController.text,
       nextMeeting: _selectedDate, // replace with your selected date
       invoice: int.tryParse(_invoiceValueController.text),
-      visitCode: _visitCodeController.text,
     );
 
     // Clear meeting start time from shared preferences
@@ -118,19 +115,6 @@ class _MeetingScreenState extends State<MeetingScreen> {
                     return 'Te rog introdu valoarea facturii';
                   } else if (int.tryParse(value) == null) {
                     return 'Te rog introdu un numar valid';
-                  }
-                  return null;
-                },
-              ),
-              TextFormField(
-                controller: _visitCodeController,
-                decoration: InputDecoration(
-                  labelText: 'Cod Vizită',
-                  border: OutlineInputBorder(),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Te rog introdu codul vizitei';
                   }
                   return null;
                 },

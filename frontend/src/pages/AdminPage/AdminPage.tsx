@@ -59,9 +59,9 @@ function AdminPage() {
           <h1>Users</h1>
           {renderTable(users, ['id', 'name', 'phone', 'role', 'agentCode'])}
           <h1>Clients</h1>
-          {renderTable(clients, ['id', 'description', 'companyName', 'taxCode', 'latitude', 'longitude', 'totalOrder', 'salesAgentId', 'clientCode'])}
+          {renderTable(clients, ['id', 'description', 'companyName', 'taxCode', 'latitude', 'longitude', 'totalOrder', 'salesAgentId'])}
           <h1>Visits</h1>
-          {renderTable(visits, ['id', 'clientId', 'meetingTime', 'conclusion', 'nextMeeting', 'invoice', 'visitCode', 'userId'])}
+          {renderTable(visits, ['id', 'clientId', 'meetingTime', 'conclusion', 'nextMeeting', 'invoice', 'userId'])}
         </div>
       );
     }

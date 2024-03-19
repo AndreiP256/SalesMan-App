@@ -36,7 +36,7 @@ function ClientsPage() {
         return <div>Loading...</div>; // Or your own loading component
     }
 
-    const columns = ['id', 'description', 'companyName', 'taxCode', 'latitude', 'longitude', 'totalOrder', 'salesAgentId', 'clientCode']; // replace with your actual columns
+    const columns = ['id', 'description', 'companyName', 'taxCode', 'latitude', 'longitude', 'totalOrder', 'salesAgentId']; // replace with your actual columns
 
     return (
         <>
