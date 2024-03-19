@@ -30,6 +30,10 @@ export class ClientController {
         const clientId = Number(id); // Convert id to number
         return this.clientService.findOneClient(clientId);
     }
+    @Get('/bytax/:taxCode')
+    async findByTaxCode(@Param('taxCode') taxCode: string) {
+        return this.clientService.findByTaxCode(taxCode);
+    }
 
     @Get(':id/visits')
     async getClientVisits(@Param('id') id: string) {

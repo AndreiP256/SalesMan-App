@@ -42,6 +42,18 @@ async createClient(data: Prisma.ClientCreateInput & { salesAgentId: number }) {
     return clients;
   }
 
+  async findByTaxCode(taxCode: string) {
+    const client = await this.prisma.client.findUnique({ where: { taxCode } });
+    if (!client) {
+      console.log("NULLLLLLLL");
+      return null;
+    }
+    else {
+      console.log(client);
+      return client;
+    }
+  }
+
   async findOneClient(id: number) {
     const client = await this.prisma.client.findUnique({ where: { id } });
     return client;

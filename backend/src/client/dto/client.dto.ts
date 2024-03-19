@@ -37,9 +37,6 @@ export class CreateClientDto {
   @IsNumber()
   salesAgentId: number;
 
-  @IsNotEmpty()
-  @IsString()
-  clientCode: string;
 }
 
 export class UpdateClientDto {
@@ -78,8 +75,4 @@ export class UpdateClientDto {
   @IsOptional()
   @IsNumber()
   salesAgentId?: number;
-
-  @IsOptional()
-  @IsString()
-  clientCode?: string;
 }

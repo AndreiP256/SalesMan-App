@@ -44,7 +44,6 @@ class ApiService {
         throw Exception(verifyData['message']);
       }
       // End of block
-
     } else {
       throw Exception(data['message']);
     }
@@ -281,16 +280,19 @@ class ApiService {
     print(response.body);
 
     if (response.statusCode == 200 || response.statusCode == 201) {
-      // If the server returns a 200 OK response,
-      // then parse the JSON.
-      print('Client created successfully');
-      var jsonResponse = jsonDecode(response.body);
-      return jsonResponse['id'];
-    } else {
-      // If the server did not return a 200 OK response,
-      // then throw an exception.
-      throw Exception('Failed to create client');
-    }
+  // If the server returns a 200 OK response,
+  // then parse the JSON.
+  print('Client created successfully');
+  if (response.body == null || response.body.trim().isEmpty) {
+    throw Exception('Empty response body');
+  }
+  var jsonResponse = jsonDecode(response.body);
+  return jsonResponse['id'];
+} else {
+  // If the server did not return a 200 OK response,
+  // then throw an exception.
+  throw Exception('Failed to create client');
+}
   }
 
   Future<List<dynamic>> fetchVisitsForCurrentUser() async {
@@ -339,4 +341,29 @@ class ApiService {
       },
     );
   }
+
+  Future<Map<String, dynamic>?> getClientByTaxCode(String taxCode) async {
+  final _storage = FlutterSecureStorage();
+  final token = await _storage.read(key: 'token');
+  final response = await http.get(
+    Uri.parse('$baseUrl/clients/bytax/$taxCode'),
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      'Authorization': 'Bearer $token',
+    },
+  );
+
+  print(response.body);
+
+  if (response.statusCode == 200 || response.statusCode == 201) {
+    var jsonResponse = jsonDecode(response.body);
+    if (jsonResponse['data'] != null) {
+      return jsonResponse['data'];
+    }
+  }
+
+  // If the server responds with a status code other than 200 or 201, or if jsonResponse['data'] is null,
+  // return null.
+  return null;
+}
 }

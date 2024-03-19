@@ -22,10 +22,6 @@ export class CreateVisitDto {
   invoice?: number;
 
   @IsNotEmpty()
-  @IsString()
-  visitCode: string;
-
-  @IsNotEmpty()
   @IsNumber()
   userId: number;
 }
@@ -50,10 +46,6 @@ export class UpdateVisitDto {
     @IsOptional()
     @IsNumber()
     invoice?: number;
-  
-    @IsOptional()
-    @IsString()
-    visitCode?: string;
   
     @IsOptional()
     @IsNumber()
