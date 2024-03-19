@@ -28,7 +28,8 @@ function App() {
           <Route path="/clients" element={<ClientsPage />} />
           <Route path="/calendar" element={<MyCalendar />} />
           <Route path="/visitRequest" element={<VisitRequestPage />} />
-          <Route path="*" element={<AdminPage />} />
+          <Route path="*" element={<UsersPage />} />
+          <Route path="/admin_page" element = {<AdminPage />}/>
         </Routes>
       </div>
     </BrowserRouter>

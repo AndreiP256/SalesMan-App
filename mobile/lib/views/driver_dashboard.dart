@@ -24,46 +24,47 @@ class _DriverDashboardState extends State<DriverDashboard> {
     await _apiService.logout();
     Navigator.pushNamedAndRemoveUntil(context, '/', (route) => false);
   }
-  
 
   @override
-Widget build(BuildContext context) {
-  return Scaffold(
-    appBar: AppBar(
-      title: Text('Driver Dashboard'),
-      actions: <Widget>[
-      IconButton(
-        icon: Icon(Icons.logout),
-        onPressed: logout,
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text('Driver Dashboard'),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.logout),
+            onPressed: logout,
+          ),
+        ],
       ),
-      ], 
-    ),
-    body: FutureBuilder(
-      future: _apiService.getClients(),
-      builder: (BuildContext context, AsyncSnapshot snapshot) {
-        if (snapshot.hasData) {
-          return ListView.builder(
-            itemCount: snapshot.data.length,
-            itemBuilder: (context, index) {
-              var client = snapshot.data[index];
-              return ListTile(
-                title: Text(client['companyName']),
-                trailing: ElevatedButton(
-                  child: Icon(Icons.map),
-                  onPressed: () {
-                    _launchMapsUrl(client['latitude'].toDouble(), client['longitude'].toDouble());
-                  },
-                ),
-              );
-            },
-          );
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          return CircularProgressIndicator();
-        }
-      },
-    ),
-  );
-}
+      body: FutureBuilder(
+        future: _apiService.getClients(),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) {
+                var client = snapshot.data[index];
+                return ListTile(
+                  title: Text(client['companyName']),
+                  trailing: ElevatedButton(
+                    child: Icon(Icons.map),
+                    onPressed: () {
+                      _launchMapsUrl(client['latitude'].toDouble(),
+                          client['longitude'].toDouble());
+                    },
+                  ),
+                );
+              },
+            );
+          } else if (snapshot.hasError) {
+            return Text('Error: ${snapshot.error}');
+          } else {
+            return CircularProgressIndicator();
+          }
+        },
+      ),
+    );
   }
+}
