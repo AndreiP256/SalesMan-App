@@ -63,9 +63,9 @@ function VisitRequestPage() {
   const addColumns = [...columns];
 
   const filteredVisitRequests = visitRequests.filter(visitRequest => {
-    const clientName = visitRequest.clientName.toLowerCase();
-    const agentName = visitRequest.salesAgentName.toLowerCase();
-
+    const clientName = visitRequest.clientName ? visitRequest.clientName.toLowerCase() : '';
+    const agentName = visitRequest.salesAgentName ? visitRequest.salesAgentName.toLowerCase() : '';
+  
     return clientName.includes(searchClient.toLowerCase()) && agentName.includes(searchAgent.toLowerCase());
   });
 

@@ -38,7 +38,7 @@ class _ClientSelectionScreenState extends State<ClientSelectionScreen> {
                 context: context,
                 delegate: ClientSearch(clients),
               );
-              if (results != null && results is Map<String, dynamic>) {
+              if (results != null && results is Map<String, dynamic> && results['id'] != null) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => MeetingScreen(clientId: results['id'])),

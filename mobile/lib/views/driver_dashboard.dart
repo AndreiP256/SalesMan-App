@@ -39,14 +39,16 @@ class _DriverDashboardState extends State<DriverDashboard> {
               var clientsFuture = _apiService.getClients();
               print('Got clients future: $clientsFuture'); // Debug statement
               var clients = await clientsFuture;
-              var mappedClients = clients.map((client) => client as Map<String, dynamic>).toList();
-              showSearch(
-                context: context,
-                delegate: ClientSearch(
-                  Future.value(mappedClients),
-                  _launchMapsUrl,
-                ),
-              );
+              if (clients != null) {
+                var mappedClients = clients.map((client) => client as Map<String, dynamic>).toList();
+                showSearch(
+                  context: context,
+                  delegate: ClientSearch(
+                    Future.value(mappedClients),
+                    _launchMapsUrl,
+                  ),
+                );
+              }
             },
           ),
           IconButton(

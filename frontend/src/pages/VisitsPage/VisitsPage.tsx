@@ -62,13 +62,11 @@ function VisitsPage() {
     }));
 
     const filteredVisits = updatedVisits.filter(visit => {
-        const clientName = clientMap[visit.clientId];
-        console.log(searchCompany, clientName, clientName.toLowerCase().includes(searchCompany.toLowerCase()));
-        const userName = userMap[visit.userId];
-    
-        return (!clientName || clientName.toLowerCase().includes(searchCompany.toLowerCase())) &&
-               (!userName || userName.toLowerCase().includes(searchUser.toLowerCase()));
-    });
+        const clientName = clientMap[visit.clientId] ? clientMap[visit.clientId].toLowerCase() : '';
+        const userName = userMap[visit.userId] ? userMap[visit.userId].toLowerCase() : '';
+      
+        return clientName.includes(searchCompany.toLowerCase()) && userName.includes(searchUser.toLowerCase());
+      });
 
     if (isAuthenticated === false) {
         return <Navigate to="/login" replace />; // replace with your login route
