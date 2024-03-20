@@ -8,8 +8,9 @@ import { checkAuth } from '../../components/checkAuth';
 import { Navigate } from 'react-router-dom';
 
 function UsersPage() {
-    const [users, setUsers] = useState([]);
+    const [users, setUsers] = useState<any[]>([]);
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+    const [search , setSearch] = useState('');
   
     useEffect(() => {
         console.log(localStorage.getItem('token'));
@@ -38,6 +39,14 @@ function UsersPage() {
         return <div>Loading...</div>; // Or your own loading component
     }
 
+    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(event.target.value);
+    };
+
+    const filteredUsers = users.filter(user => 
+        user.name.toLowerCase().includes(search.toLowerCase())
+    );
+
     // Rest of your UsersPage component code
 
     const columns = ['id', 'name', 'phone', 'role']; // replace with your actual columns
@@ -45,8 +54,11 @@ function UsersPage() {
     return (
         <div>
             <h1>Users</h1>
-            <AddForm columns={addColumns} addType="user" />
-            <Table data={users} columns={columns} onEdit={usersEdit} onDelete={usersDelete}/>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <input type="text" value={search} onChange={handleSearch} placeholder="Search users..." style={{ marginRight: '20px' }} />
+                <AddForm columns={addColumns} addType="user" />
+            </div>
+            <Table data={filteredUsers} columns={columns} onEdit={usersEdit} onDelete={usersDelete}/>
         </div>
     );
 }

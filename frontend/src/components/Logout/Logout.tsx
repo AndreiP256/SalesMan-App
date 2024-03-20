@@ -10,7 +10,7 @@ function LogoutButton() {
     };
 
     return (
-        <button className="btn btn-primary mr-3" onClick={handleLogout}>
+        <button className="btn btn-primary mr-3" style={{"marginRight": "10px"}} onClick={handleLogout}>
             Logout
         </button>
     );

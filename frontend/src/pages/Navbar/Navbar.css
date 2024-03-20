@@ -10,7 +10,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 30%;
+    width: clamp(400px, 30%, 1200px);
   }
   
   .navbar-link {

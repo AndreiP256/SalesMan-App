@@ -5,8 +5,10 @@ import { checkAuth } from '../../components/checkAuth';
 import { Navigate } from 'react-router-dom';
 
 function VisitRequestPage() {
-  const [visitRequests, setVisitRequests] = useState([]);
+  const [visitRequests, setVisitRequests] = useState<any[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+  const [searchClient, setSearchClient] = useState('');
+  const [searchAgent, setSearchAgent] = useState('');
 
   const visitRequestDelete = async (id: number) => {
     try {
@@ -59,12 +61,24 @@ function VisitRequestPage() {
 
   const columns = ['id', 'salesAgentId', 'clientId']; // replace with your actual columns
   const addColumns = [...columns];
+
+  const filteredVisitRequests = visitRequests.filter(visitRequest => {
+    const clientName = visitRequest.clientName.toLowerCase();
+    const agentName = visitRequest.salesAgentName.toLowerCase();
+
+    return clientName.includes(searchClient.toLowerCase()) && agentName.includes(searchAgent.toLowerCase());
+  });
+
   return (
     <div>
       <h1>Visit Requests</h1>
-      <AddForm columns={addColumns} addType="visitRequest" />
+      <div style={{ display: 'flex', alignItems: 'center' }}>
+          <input type="text" value={searchClient} onChange={(e) => setSearchClient(e.target.value)} placeholder="Search by client" style={{ marginRight: '20px' }}/>
+          <input type="text" value={searchAgent} onChange={(e) => setSearchAgent(e.target.value)} placeholder="Search by agent"style={{ marginRight: '20px' }} />
+          <AddForm columns={addColumns} addType="visitRequest" />
+      </div>
       <ul className="calendar-events">
-        {visitRequests.map((visitRequest: any, index: number) => (
+        {filteredVisitRequests.map((visitRequest: any, index: number) => (
             <li key={index} className="calendar-event">
             <h2 className="event-titlet">Client: {visitRequest.clientName}</h2>
             <p className="event-title">Status: {visitRequest.status}</p>

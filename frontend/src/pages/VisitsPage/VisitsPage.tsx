@@ -8,7 +8,11 @@ import { checkAuth } from '../../components/checkAuth';
 import { Navigate } from 'react-router-dom';
 
 function VisitsPage() {
-    const [visits, setVisits] = useState([]);
+    const [visits, setVisits] = useState<any[]>([]);
+    const [clients, setClients] = useState<any[]>([]);
+    const [users, setUsers] = useState<any[]>([]);
+    const [searchCompany, setSearchCompany] = useState('');
+    const [searchUser, setSearchUser] = useState('');
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
     useEffect(() => {
@@ -22,11 +26,49 @@ function VisitsPage() {
                         setVisits(response.data);
                     })
                     .catch(error => console.error(error));
+
+                axios.get(process.env.REACT_APP_URL + '/clients')
+                    .then(response => {
+                        setClients(response.data);
+                    })
+                    .catch(error => console.error(error));
+
+                axios.get(process.env.REACT_APP_URL + '/user')
+                    .then(response => {
+                        setUsers(response.data);
+                    })
+                    .catch(error => console.error(error));
             }
         };
 
         checkAuthentication();
     }, []);
+
+    const handleSearchCompany = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchCompany(event.target.value);
+    };
+
+    const handleSearchUser = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchUser(event.target.value);
+    };
+
+    const clientMap = clients.reduce((map, client) => ({ ...map, [client.id]: client.companyName }), {});
+    const userMap = users.reduce((map, user) => ({ ...map, [user.id]: user.name }), {});
+
+    const updatedVisits = visits.map(visit => ({
+        ...visit,
+        client: clientMap[visit.clientId] || visit.clientId,
+        user: userMap[visit.userId] || visit.userId
+    }));
+
+    const filteredVisits = updatedVisits.filter(visit => {
+        const clientName = clientMap[visit.clientId];
+        console.log(searchCompany, clientName, clientName.toLowerCase().includes(searchCompany.toLowerCase()));
+        const userName = userMap[visit.userId];
+    
+        return (!clientName || clientName.toLowerCase().includes(searchCompany.toLowerCase())) &&
+               (!userName || userName.toLowerCase().includes(searchUser.toLowerCase()));
+    });
 
     if (isAuthenticated === false) {
         return <Navigate to="/login" replace />; // replace with your login route
@@ -36,13 +78,17 @@ function VisitsPage() {
         return <div>Loading...</div>; // Or your own loading component
     }
 
-    const columns = ['id', 'clientId', 'meetingTime', 'conclusion', 'nextMeeting', 'invoice', 'userId']; // replace with your actual columns
+    const columns = ['id', 'client', 'meetingTime', 'conclusion', 'nextMeeting', 'invoice', 'user']; // replace with your actual columns
 
     return (
         <div>
             <h1>Visits</h1>
-            <AddForm columns={columns} addType="visit"/>
-            <Table data={visits} columns={columns} onEdit={visitsEdit} onDelete={visitsDelete}/>
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <input type="text" value={searchCompany} onChange={handleSearchCompany} placeholder="Search companies..." style={{ marginRight: '20px' }} />
+                <input type="text" value={searchUser} onChange={handleSearchUser} placeholder="Search users..." style={{ marginRight: '20px' }} />
+                <AddForm columns={columns} addType="visit"/>
+            </div>
+            <Table data={filteredVisits} columns={columns} onEdit={visitsEdit} onDelete={visitsDelete}/>
         </div>
     );
 }

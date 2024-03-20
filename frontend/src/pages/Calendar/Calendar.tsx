@@ -7,33 +7,45 @@ import { Navigate } from 'react-router-dom';
 
 function MyCalendar() {
   const [events, setEvents] = useState([]);
+  const [clients, setClients] = useState<any[]>([]);
   const [currentDate, setCurrentDate] = useState(new Date());
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
   useEffect(() => {
     const checkAuthentication = async () => {
-        const authStatus = await checkAuth(); // replace with your auth checking function
-        setIsAuthenticated(authStatus);
-        console.log(authStatus);
-        console.log(isAuthenticated);
-
-        if (authStatus) {
-            const date = moment(currentDate).format('YYYY-MM-DD');
-            axios.get(`${process.env.REACT_APP_URL}/visit/date/${date}`)
-                .then(response => {
-                    if (response.data) {
-                        const fetchedEvents = response.data.map((item:any) => ({
-                            start: new Date(item.meetingTime),
-                            end: new Date(item.nextMeeting),
-                            title: item.visitCode ? item.visitCode : 'No visit code',
-                        }));
-                        setEvents(fetchedEvents);
-                    }
-                })
-                .catch(error => console.error(error));
+      const authStatus = await checkAuth(); // replace with your auth checking function
+      setIsAuthenticated(authStatus);
+      console.log(authStatus);
+      console.log(isAuthenticated);
+  
+      if (authStatus) {
+        const date = moment(currentDate).format('YYYY-MM-DD');
+        try {
+          const clientsResponse = await axios.get(`${process.env.REACT_APP_URL}/clients`);
+          if (clientsResponse.data) {
+            setClients(clientsResponse.data);
+          }
+  
+          const visitsResponse = await axios.get(`${process.env.REACT_APP_URL}/visit/date/${date}`);
+          if (visitsResponse.data) {
+            const fetchedEvents = visitsResponse.data.map((item:any) => {
+              const client = clientsResponse.data.find((client: any) => client.id === item.clientId);
+              const companyName = client ? client.companyName : 'No company name';
+  
+              return {
+                start: new Date(item.meetingTime),
+                end: new Date(item.nextMeeting),
+                title: companyName,
+              };
+            });
+            setEvents(fetchedEvents);
+          }
+        } catch (error) {
+          console.error(error);
         }
+      }
     };
-
+  
     checkAuthentication();
   }, [currentDate]);
 

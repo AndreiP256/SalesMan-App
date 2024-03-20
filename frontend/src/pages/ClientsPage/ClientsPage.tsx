@@ -8,7 +8,9 @@ import { checkAuth } from '../../components/checkAuth';
 import { Navigate } from 'react-router-dom';
 
 function ClientsPage() {
-    const [clients, setClients] = useState([]);
+    const [clients, setClients] = useState<any[]>([]);
+    const [users, setUsers] = useState<any[]>([]);
+    const [search, setSearch] = useState('');
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
     useEffect(() => {
@@ -22,11 +24,32 @@ function ClientsPage() {
                         setClients(response.data);
                     })
                     .catch(error => console.error(error));
+
+                axios.get(process.env.REACT_APP_URL + '/user')
+                    .then(response => {
+                        setUsers(response.data);
+                    })
+                    .catch(error => console.error(error));
             }
         };
 
         checkAuthentication();
     }, []);
+
+    const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearch(event.target.value);
+    };
+
+    const userMap = users.reduce((map, user) => ({ ...map, [user.id]: user.name }), {});
+
+    const updatedClients = clients.map(client => ({
+        ...client,
+        salesAgent: userMap[client.salesAgentId] || client.salesAgentId
+    }));
+
+    const filteredClients = updatedClients.filter((client: { companyName: string }) => 
+        client.companyName.toLowerCase().includes(search.toLowerCase())
+    );
 
     if (isAuthenticated === false) {
         return <Navigate to="/login" replace />; // replace with your login route
@@ -36,13 +59,16 @@ function ClientsPage() {
         return <div>Loading...</div>; // Or your own loading component
     }
 
-    const columns = ['id', 'description', 'companyName', 'taxCode', 'latitude', 'longitude', 'totalOrder', 'salesAgentId']; // replace with your actual columns
+    const columns = ['id', 'description', 'companyName', 'taxCode', 'latitude', 'longitude', 'totalOrder', 'salesAgent']; // replace with your actual columns
 
     return (
         <>
             <h1>Clients</h1>
-            <AddForm columns={columns} addType="client" />
-            <Table data={clients} columns={columns} onEdit={clientsEdit} onDelete={clientsDelete} />
+            <div style={{ display: 'flex', alignItems: 'center' }}>
+                <input type="text" value={search} onChange={handleSearch} placeholder="Search clients..." style={{ marginRight: '20px' }} />
+                <AddForm columns={columns} addType="client" />
+            </div>
+            <Table data={filteredClients} columns={columns} onEdit={clientsEdit} onDelete={clientsDelete} />
         </>
     );
 }
