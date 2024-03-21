@@ -3,7 +3,9 @@ import axios from 'axios';
 import moment from 'moment';
 import './TrackerPage.css'; // Import the CSS file
 import { error } from 'console';
-import MapComponent from '../../components/Map/Map'; // adjust the path according to your file structure
+import MapComponent from '../../components/Map/Map';
+import { checkAuth } from '../../components/checkAuth';
+import { Navigate } from 'react-router-dom'; // adjust the path according to your file structure
 
 function TrackerPage() {
     const [users, setUsers] = useState([]);
@@ -11,6 +13,15 @@ function TrackerPage() {
     const [visits, setVisits] = useState([]);
     const [currentDate, setCurrentDate] = useState(new Date());
     const [searchTerm, setSearchTerm] = useState('');
+    const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+    useEffect(() => {
+        const checkAuthentication = async () => {
+            const authStatus = await checkAuth(); // replace with your auth checking function
+            setIsAuthenticated(authStatus);
+        };
+            checkAuthentication();
+        }, []);
 
     useEffect(() => {
         axios.get(`${process.env.REACT_APP_URL}/user`) // Fetch all users
@@ -68,17 +79,31 @@ function TrackerPage() {
                 .then(allVisits => {
                     // Filter the visits to include only those for the selected date
                     const visitsForSelectedDate = allVisits.filter((visit: any) => {
-                        const visitDate = moment(visit.meetingTime).format('YYYY-MM-DD');
-                        const selectedDate = moment(currentDate).format('YYYY-MM-DD');
-                        return visitDate === selectedDate;
+                      const visitDate = moment(visit.meetingTime).format('YYYY-MM-DD');
+                      const selectedDate = moment(currentDate).format('YYYY-MM-DD');
+                      return visitDate === selectedDate;
                     });
-
-                    setVisits(visitsForSelectedDate as never[]);
-                });
+                  
+                    // Sort the visits chronologically
+                    const sortedVisits = visitsForSelectedDate.sort((a: any, b: any) => {
+                      return new Date(a.meetingTime).getTime() - new Date(b.meetingTime).getTime();
+                    });
+                  
+                    setVisits(sortedVisits as never[]);
+                  });
+                  
         }
     }, [selectedUser, currentDate]);
 
     const filteredUsers = users.filter((user: { name: string }) => user.name.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    if (isAuthenticated === false) {
+        return <Navigate to="/login" replace />; // replace with your login route
+    }
+
+    if (isAuthenticated === null) {
+        return <div>Loading...</div>; // Or your own loading component
+    }
 
     return (
         <div className="tracker-page">
