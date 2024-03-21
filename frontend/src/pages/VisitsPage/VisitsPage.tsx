@@ -67,10 +67,10 @@ function VisitsPage() {
     }));
 
     const filteredVisits = updatedVisits.filter(visit => {
-        const clientName = clientMap[visit.clientId] ? clientMap[visit.clientId].toLowerCase() : '';
-        const userName = userMap[visit.userId] ? userMap[visit.userId].toLowerCase() : '';
-        const meetingTime = new Date(visit.meetingTime).toISOString().split('T')[0]; // convert meetingTime to ISO string date
-
+        const clientName = visit.clientId.toLowerCase();
+        const userName = visit.userId.toLowerCase();
+        const meetingTime = new Date(visit.meetingTime).toISOString().split('T')[0];
+    
         return clientName.includes(searchCompany.toLowerCase()) && userName.includes(searchUser.toLowerCase()) && meetingTime.includes(searchDate);
     }); // updated to filter by search date
 
