@@ -67,13 +67,12 @@ function VisitsPage() {
     }));
 
     const filteredVisits = updatedVisits.filter(visit => {
-        const clientName = visit.clientId.toLowerCase();
-        const userName = visit.userId.toLowerCase();
+        const clientName = typeof visit.clientId === 'string' ? visit.clientId.toLowerCase() : '';
+        const userName = typeof visit.userId === 'string' ? visit.userId.toLowerCase() : '';
         const meetingTime = new Date(visit.meetingTime).toISOString().split('T')[0];
     
         return clientName.includes(searchCompany.toLowerCase()) && userName.includes(searchUser.toLowerCase()) && meetingTime.includes(searchDate);
-    }); // updated to filter by search date
-
+    });
 
     if (isAuthenticated === false) {
         return <Navigate to="/login" replace />; // replace with your login route
