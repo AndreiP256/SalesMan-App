@@ -1,22 +1,30 @@
+body {
+    overflow: hidden;
+}
+
 .tracker-page {
     display: flex;
     justify-content: space-between;
+    height: calc(100vh - 70px); /* Set the height to the full viewport height minus the height of the navbar */
 }
 
 .user-list {
     width: 30%;
     padding: 20px;
     border-right: 1px solid #ccc;
+    height: 100%; /* Set the height to 100% of the parent's height */
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .user-data {
     width: 70%;
     padding: 20px;
+    height: 100%; /* Set the height to 100% of the parent's height */
+    overflow-y: auto; /* Enable vertical scrolling */
 }
 
 .calendar-header {
     display: flex;
-    justify-content: space-between;
     margin-bottom: 20px;
 }
 
@@ -74,21 +82,4 @@
     margin-top: 20px;
     border-radius: 5px;
     overflow: hidden;
-}
-
-.tracker-page {
-    display: flex;
-    height: 100vh; /* Set the height to the full viewport height */
-}
-
-.user-list {
-    width: 30%; /* Set the width to 50% of the parent's width */
-    height: 100%; /* Set the height to 100% of the parent's height */
-    overflow-y: auto; /* Enable vertical scrolling */
-}
-
-.user-data {
-    width: 70%; /* Set the width to 50% of the parent's width */
-    height: 100%; /* Set the height to 100% of the parent's height */
-    overflow-y: auto; /* Enable vertical scrolling */
 }
