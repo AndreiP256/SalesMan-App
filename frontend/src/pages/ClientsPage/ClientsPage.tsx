@@ -44,7 +44,7 @@ function ClientsPage() {
 
     const updatedClients = clients.map(client => ({
         ...client,
-        salesAgent: userMap[client.salesAgentId] || client.salesAgentId
+        salesAgentId: userMap[client.salesAgentId] || client.salesAgentId
     }));
 
     const filteredClients = updatedClients.filter((client: { companyName: string }) => 
@@ -59,7 +59,7 @@ function ClientsPage() {
         return <div>Loading...</div>; // Or your own loading component
     }
 
-    const columns = ['id', 'description', 'companyName', 'taxCode', 'latitude', 'longitude', 'totalOrder', 'salesAgent']; // replace with your actual columns
+    const columns = ['id', 'description', 'companyName', 'taxCode', 'latitude', 'longitude', 'totalOrder', 'salesAgentId']; // replace with your actual columns
 
     return (
         <>

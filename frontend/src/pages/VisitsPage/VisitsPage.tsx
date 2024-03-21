@@ -14,6 +14,7 @@ function VisitsPage() {
     const [searchCompany, setSearchCompany] = useState('');
     const [searchUser, setSearchUser] = useState('');
     const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+    const [searchDate, setSearchDate] = useState('');
 
     useEffect(() => {
         const checkAuthentication = async () => {
@@ -48,6 +49,10 @@ function VisitsPage() {
         setSearchCompany(event.target.value);
     };
 
+    const handleSearchDate = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setSearchDate(event.target.value);
+    }; // new handler function for search date
+
     const handleSearchUser = (event: React.ChangeEvent<HTMLInputElement>) => {
         setSearchUser(event.target.value);
     };
@@ -57,16 +62,18 @@ function VisitsPage() {
 
     const updatedVisits = visits.map(visit => ({
         ...visit,
-        client: clientMap[visit.clientId] || visit.clientId,
-        user: userMap[visit.userId] || visit.userId
+        clientId: clientMap[visit.clientId] || visit.clientId,
+        userId: userMap[visit.userId] || visit.userId
     }));
 
     const filteredVisits = updatedVisits.filter(visit => {
         const clientName = clientMap[visit.clientId] ? clientMap[visit.clientId].toLowerCase() : '';
         const userName = userMap[visit.userId] ? userMap[visit.userId].toLowerCase() : '';
-      
-        return clientName.includes(searchCompany.toLowerCase()) && userName.includes(searchUser.toLowerCase());
-      });
+        const meetingTime = new Date(visit.meetingTime).toISOString().split('T')[0]; // convert meetingTime to ISO string date
+
+        return clientName.includes(searchCompany.toLowerCase()) && userName.includes(searchUser.toLowerCase()) && meetingTime.includes(searchDate);
+    }); // updated to filter by search date
+
 
     if (isAuthenticated === false) {
         return <Navigate to="/login" replace />; // replace with your login route
@@ -76,7 +83,7 @@ function VisitsPage() {
         return <div>Loading...</div>; // Or your own loading component
     }
 
-    const columns = ['id', 'client', 'meetingTime', 'conclusion', 'nextMeeting', 'invoice', 'user']; // replace with your actual columns
+    const columns = ['id', 'clientId', 'meetingTime', 'conclusion', 'nextMeeting', 'invoice', 'userId']; // replace with your actual columns
 
     return (
         <div>
@@ -84,6 +91,7 @@ function VisitsPage() {
             <div style={{ display: 'flex', alignItems: 'center' }}>
                 <input type="text" value={searchCompany} onChange={handleSearchCompany} placeholder="Search companies..." style={{ marginRight: '20px' }} />
                 <input type="text" value={searchUser} onChange={handleSearchUser} placeholder="Search users..." style={{ marginRight: '20px' }} />
+                <input type="date" value={searchDate} onChange={handleSearchDate} placeholder="Search date..." style={{ marginRight: '20px' }} /> {/* new input field for search date */}
                 <AddForm columns={columns} addType="visit"/>
             </div>
             <Table data={filteredVisits} columns={columns} onEdit={visitsEdit} onDelete={visitsDelete}/>

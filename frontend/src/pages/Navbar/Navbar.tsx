@@ -12,6 +12,7 @@ function Navbar() {
         <Link to="/clients" className="navbar-link">Clients</Link>
         <Link to="/calendar" className="navbar-link">Calendar</Link>
         <Link to="/visitRequest" className="navbar-link">Visit Requests</Link>
+        <Link to="/tracker" className="navbar-link">Tracker</Link>
       </div>
       <LogoutButton />
     </nav>

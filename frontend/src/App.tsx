@@ -11,6 +11,8 @@ import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 import LoginPage from "./pages/Login/Login";
 import "./App.css";
 import VisitRequestPage from "./pages/VisitRequestsPage/VisitRequestsPage";
+import TrackerPage from "./pages/TrackerPage/TrackerPage";
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 
 
@@ -30,6 +32,7 @@ function App() {
           <Route path="/visitRequest" element={<VisitRequestPage />} />
           <Route path="*" element={<UsersPage />} />
           <Route path="/admin_page" element = {<AdminPage />}/>
+          <Route path="/tracker" element = {<TrackerPage />}/>
         </Routes>
       </div>
     </BrowserRouter>
